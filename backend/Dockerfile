@@ -13,6 +13,4 @@ COPY . .
 RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
-
 ENTRYPOINT ["/app/entrypoint.sh"]
