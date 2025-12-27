@@ -1,0 +1,6 @@
+:root { color-scheme: dark; }
+body { font-family: system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 16px; }
+nav a { margin-right: 12px; }
+h1 { margin: 24px 0 8px; }
+ul { padding-left: 18px; }
+footer { margin-top: 48px; opacity: .8; }

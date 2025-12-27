@@ -1,9 +1,11 @@
 <!doctype html>
 <html lang="fr">
+{% load static %}
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{% block title %}{{ config.full_name|default:"Portfolio" }}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'core/site.css' %}">
 </head>
 <body>
   <header>
@@ -23,5 +25,6 @@
     {% if config and config.github_url %}<a href="{{ config.github_url }}">GitHub</a>{% endif %}
     {% if config and config.email %} — <a href="mailto:{{ config.email }}">{{ config.email }}</a>{% endif %}
   </footer>
+  <script type="module" src="{% static 'core/dist/main.js' %}"></script>
 </body>
 </html>

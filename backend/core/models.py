@@ -7,7 +7,6 @@ class SiteConfig(models.Model):
     headline = models.CharField(max_length=200, blank=True)
     email = models.EmailField(blank=True)
     github_url = models.URLField(blank=True)
-    linkedin_url = models.URLField(blank=True)
     cv_file = models.FileField(upload_to="cv/", blank=True, null=True)
 
     updated_at = models.DateTimeField(auto_now=True)
