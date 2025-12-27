@@ -17,6 +17,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      network: host
     env_file: .env
     depends_on:
       db:

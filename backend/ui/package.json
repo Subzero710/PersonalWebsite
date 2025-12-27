@@ -3,10 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build"
+    "build": "esbuild src/main.ts --bundle --format=esm --target=es2020 --minify --sourcemap --outfile=../core/static/core/dist/main.js",
+    "dev": "esbuild src/main.ts --bundle --format=esm --target=es2020 --sourcemap --outfile=../core/static/core/dist/main.js --watch"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
-    "vite": "^6.0.0"
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
   }
 }

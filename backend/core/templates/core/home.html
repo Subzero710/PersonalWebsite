@@ -1,15 +1,57 @@
 {% extends "core/base.html" %}
 {% block title %}Accueil{% endblock %}
 {% block content %}
-  <h1>{{ config.full_name|default:"Portfolio" }}</h1>
-  <p>{{ config.headline }}</p>
 
-  <h2>Projets</h2>
-  <ul>
+<section class="hero">
+  <div class="reveal">
+    <h1 class="hero-title">
+      <span class="grad">{{ config.full_name|default:"Portfolio" }}</span>
+    </h1>
+    <p class="hero-sub">{{ config.headline|default:"Développeur — projets, stack, contact." }}</p>
+
+    <div class="hero-actions">
+      <a class="btn primary" href="/projects/">Voir les projets</a>
+      {% if config and config.github_url %}<a class="btn" href="{{ config.github_url }}">GitHub</a>{% endif %}
+      {% if config and config.email %}<button class="btn" data-copy="{{ config.email }}">Copier email</button>{% endif %}
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="n">{{ featured|length }}</div><div class="l">featured</div></div>
+      <div class="kpi"><div class="n">Django</div><div class="l">SSR</div></div>
+      <div class="kpi"><div class="n">Docker</div><div class="l">deploy</div></div>
+    </div>
+  </div>
+
+  <div class="hero-card reveal">
+    <div class="hero-card-head">
+      <div class="hero-card-dot"></div>
+      <div>
+        <div class="hero-card-title">Highlights</div>
+        <div class="hero-card-sub">Ce que tu veux mettre en avant</div>
+      </div>
+    </div>
+
+    <ul class="bullets">
+      <li>Stack: Django + Postgres + Nginx + Gunicorn</li>
+      <li>UI: templates + TS bundlé (un seul main.js)</li>
+      <li>Admin-first: tu publies via Django Admin</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <h2>Projets sélectionnés</h2>
+    <a class="link" href="/projects/">Tout voir</a>
+  </div>
+
+  <div class="grid">
     {% for p in featured %}
-      <li><a href="{% url 'project_detail' p.slug %}">{{ p.title }}</a> — {{ p.summary }}</li>
+      {% include "core/partials/project_card.html" with project=p %}
     {% empty %}
-      <li>Aucun projet “featured” pour l’instant.</li>
+      <p class="muted reveal">Aucun projet “featured” pour l’instant.</p>
     {% endfor %}
-  </ul>
+  </div>
+</section>
+
 {% endblock %}

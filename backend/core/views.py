@@ -1,6 +1,6 @@
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import Project, SiteConfig
+from .models import Project, SiteConfig, Tag
 
 
 def home(request):
@@ -12,8 +12,8 @@ def home(request):
 def projects_list(request):
     config = SiteConfig.objects.order_by("-updated_at").first()
     projects = Project.objects.all()
-    return render(request, "core/projects_list.html", {"config": config, "projects": projects})
-
+    tags = Tag.objects.all().order_by("name")
+    return render(request, "core/projects_list.html", {"config": config, "projects": projects, "tags": tags})
 
 def project_detail(request, slug: str):
     config = SiteConfig.objects.order_by("-updated_at").first()

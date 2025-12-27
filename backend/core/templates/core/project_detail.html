@@ -1,23 +1,31 @@
 {% extends "core/base.html" %}
 {% block title %}{{ project.title }}{% endblock %}
 {% block content %}
-  <h1>{{ project.title }}</h1>
-  <p>{{ project.summary }}</p>
 
-  {% if project.tags.all %}
-    <p>
-      {% for t in project.tags.all %}
-        <span>{{ t.name }}</span>
-      {% endfor %}
-    </p>
-  {% endif %}
+<section class="section">
+  <div class="detail reveal">
+    <div class="detail-head">
+      <h1 style="margin:0">{{ project.title }}</h1>
+      <div class="detail-actions">
+        {% if project.repo_url %}<a class="btn" href="{{ project.repo_url }}">Repo</a>{% endif %}
+        {% if project.demo_url %}<a class="btn primary" href="{{ project.demo_url }}">Demo</a>{% endif %}
+      </div>
+    </div>
 
-  <div>
-    {{ project.description|linebreaks }}
+    {% if project.summary %}<p class="muted">{{ project.summary }}</p>{% endif %}
+
+    {% if project.tags.all %}
+      <div class="chips">
+        {% for t in project.tags.all %}<span class="chip">{{ t.name }}</span>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if project.description %}
+      <div class="prose">
+        {{ project.description|linebreaks }}
+      </div>
+    {% endif %}
   </div>
+</section>
 
-  <p>
-    {% if project.repo_url %}<a href="{{ project.repo_url }}">Repo</a>{% endif %}
-    {% if project.demo_url %} | <a href="{{ project.demo_url }}">Demo</a>{% endif %}
-  </p>
 {% endblock %}
