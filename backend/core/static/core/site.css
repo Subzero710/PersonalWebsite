@@ -212,20 +212,45 @@ main{ padding: 26px 0 70px; }
 
 .card{
   grid-column: span 6;
-  border:1px solid var(--line);
-  background: var(--card);
+  position: relative;
+  overflow: hidden;
+
   border-radius: var(--r20);
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
   box-shadow: 0 14px 45px rgba(0,0,0,.35);
+
   padding: 16px;
-  text-decoration:none;
-  transition: transform .18s ease, border-color .18s ease, background .18s ease;
-  position:relative;
-  overflow:hidden;
+  text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(6,182,212,.45), rgba(124,58,237,.45), rgba(34,197,94,.35));
+  opacity: .18;
+  pointer-events: none;
+
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
 }
 .card:hover{
-  transform: translateY(-3px);
-  border-color: rgba(255,255,255,.18);
-  background: rgba(255,255,255,.07);
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.10);
+  box-shadow: 0 22px 70px rgba(0,0,0,.55);
+}
+.card:hover::before{
+  opacity: .55;
+}
+.card:focus-visible{
+  outline: 2px solid rgba(6,182,212,.55);
+  outline-offset: 3px;
 }
 .card:after{
   content:"";
@@ -269,10 +294,15 @@ footer{
 }
 
 /* ---- Reveal animation ---- */
-.reveal{
+.reveal { opacity: 1; transform: none; }
+.js .reveal{
   opacity: 0;
   transform: translateY(10px);
   transition: opacity .6s ease, transform .6s ease;
+}
+.js .reveal.in{
+  opacity: 1;
+  transform: translateY(0);
 }
 .reveal.in{
   opacity: 1;
@@ -305,6 +335,10 @@ footer{
   border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); border-radius:999px; }
 .navlink{ text-decoration:none; padding:8px 12px; border-radius:999px; color: rgba(233,238,252,.72); font-weight:700; font-size:14px; }
 .navlink:hover{ color:#e9eefc; background: rgba(255,255,255,.06); }
+.navlink.is-active{
+  color: var(--text);
+  background: rgba(255,255,255,.08);
+}
 
 .btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px;
   padding:10px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.10);

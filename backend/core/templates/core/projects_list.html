@@ -4,14 +4,14 @@
 
 <section class="section">
   <div class="section-head">
-    <h1 style="margin:0">Projets</h1>
-    <div class="muted">{{ projects|length }} projets</div>
+    <h1 style="margin:0">Projects</h1>
+    <div class="muted">{{ projects|length }} projects</div>
   </div>
 
   <div class="filters reveal">
-    <input class="input" id="projectSearch" type="search" placeholder="Rechercher (titre)…" autocomplete="off" />
+    <input class="input" id="projectSearch" type="search" placeholder="Search (title)…" autocomplete="off" />
     <div class="tagbar" id="tagBar">
-      <button class="tagpill is-active" data-tag="all">Tous</button>
+      <button class="tagpill is-active" data-tag="all">All</button>
       {% for t in tags %}
         <button class="tagpill" data-tag="{{ t.slug }}">{{ t.name }}</button>
       {% endfor %}

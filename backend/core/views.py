@@ -25,4 +25,4 @@ def cv_download(request):
     config = SiteConfig.objects.order_by("-updated_at").first()
     if not config or not config.cv_file:
         raise Http404("CV not set")
-    return FileResponse(config.cv_file.open("rb"), as_attachment=True, filename="CV.pdf")
+    return FileResponse(config.cv_file.open("rb"), as_attachment=True, filename="MyResume.pdf")

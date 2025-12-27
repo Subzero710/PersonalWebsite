@@ -1,6 +1,6 @@
 <!doctype html>
 {% load static %}
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -17,18 +17,18 @@
         <span class="brand-text">{{ config.full_name|default:"Portfolio" }}</span>
       </a>
 
-      <nav class="navlinks" aria-label="Navigation">
-        <a class="navlink" href="/">Accueil</a>
-        <a class="navlink" href="/projects/">Projets</a>
-        <a class="navlink" href="/cv/">CV</a>
-        <a class="navlink" href="/admin/">Admin</a>
-      </nav>
+    <nav class="navlinks" aria-label="Navigation">
+      <a class="navlink" href="/">Home</a>
+      <a class="navlink" href="/projects/">Projects</a>
+      <a class="navlink" href="/cv/">Resume</a>
+      <a class="navlink" href="/admin/">Admin</a>
+    </nav>
 
       <div class="navcta">
         {% if config and config.cv_file %}
-          <a class="btn primary" href="/cv/">Télécharger CV</a>
+          <a class="btn primary" href="/cv/">Download resume</a>
         {% else %}
-          <a class="btn" href="/projects/">Voir les projets</a>
+          <a class="btn" href="/projects/">View projects</a>
         {% endif %}
       </div>
     </div>

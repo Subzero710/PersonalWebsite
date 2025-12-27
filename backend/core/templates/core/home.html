@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% block title %}Accueil{% endblock %}
+{% block title %}Home{% endblock %}
 {% block content %}
 
 <section class="hero">
@@ -7,12 +7,12 @@
     <h1 class="hero-title">
       <span class="grad">{{ config.full_name|default:"Portfolio" }}</span>
     </h1>
-    <p class="hero-sub">{{ config.headline|default:"Développeur — projets, stack, contact." }}</p>
+    <p class="hero-sub">{{ config.headline|default:"Developer — projects, stack, contact." }}</p>
 
     <div class="hero-actions">
-      <a class="btn primary" href="/projects/">Voir les projets</a>
+      <a class="btn primary" href="/projects/">View projects</a>
       {% if config and config.github_url %}<a class="btn" href="{{ config.github_url }}">GitHub</a>{% endif %}
-      {% if config and config.email %}<button class="btn" data-copy="{{ config.email }}">Copier email</button>{% endif %}
+      {% if config and config.email %}<button class="btn" data-copy="{{ config.email }}">Copy email</button>{% endif %}
     </div>
 
     <div class="kpis">
@@ -27,29 +27,29 @@
       <div class="hero-card-dot"></div>
       <div>
         <div class="hero-card-title">Highlights</div>
-        <div class="hero-card-sub">Ce que tu veux mettre en avant</div>
+        <div class="hero-card-sub">What I’m currently focusing on</div>
       </div>
     </div>
 
     <ul class="bullets">
       <li>Stack: Django + Postgres + Nginx + Gunicorn</li>
-      <li>UI: templates + TS bundlé (un seul main.js)</li>
-      <li>Admin-first: tu publies via Django Admin</li>
+      <li>UI: templates + bundled TS (single main.js)</li>
+      <li>Admin-first: content is managed via Django Admin</li>
     </ul>
   </div>
 </section>
 
 <section class="section">
   <div class="section-head">
-    <h2>Projets sélectionnés</h2>
-    <a class="link" href="/projects/">Tout voir</a>
+    <h2>Featured projects</h2>
+    <a class="link" href="/projects/">View all</a>
   </div>
 
   <div class="grid">
     {% for p in featured %}
       {% include "core/partials/project_card.html" with project=p %}
     {% empty %}
-      <p class="muted reveal">Aucun projet “featured” pour l’instant.</p>
+      <p class="muted reveal">No featured projects yet.</p>
     {% endfor %}
   </div>
 </section>
