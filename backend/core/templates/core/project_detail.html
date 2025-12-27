@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% block title %}{{ project.title }}{% endblock %}
+{% block content %}
+  <h1>{{ project.title }}</h1>
+  <p>{{ project.summary }}</p>
+
+  {% if project.tags.all %}
+    <p>
+      {% for t in project.tags.all %}
+        <span>{{ t.name }}</span>
+      {% endfor %}
+    </p>
+  {% endif %}
+
+  <div>
+    {{ project.description|linebreaks }}
+  </div>
+
+  <p>
+    {% if project.repo_url %}<a href="{{ project.repo_url }}">Repo</a>{% endif %}
+    {% if project.demo_url %} | <a href="{{ project.demo_url }}">Demo</a>{% endif %}
+  </p>
+{% endblock %}

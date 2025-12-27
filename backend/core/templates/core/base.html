@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}{{ config.full_name|default:"Portfolio" }}{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Accueil</a>
+      <a href="/projects/">Projets</a>
+      <a href="/cv/">CV</a>
+      <a href="/admin/">Admin</a>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    {% if config and config.github_url %}<a href="{{ config.github_url }}">GitHub</a>{% endif %}
+    {% if config and config.email %} — <a href="mailto:{{ config.email }}">{{ config.email }}</a>{% endif %}
+  </footer>
+</body>
+</html>

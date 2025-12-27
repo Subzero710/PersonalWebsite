@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+  <h1>{{ config.full_name|default:"Portfolio" }}</h1>
+  <p>{{ config.headline }}</p>
+
+  <h2>Projets</h2>
+  <ul>
+    {% for p in featured %}
+      <li><a href="{% url 'project_detail' p.slug %}">{{ p.title }}</a> — {{ p.summary }}</li>
+    {% empty %}
+      <li>Aucun projet “featured” pour l’instant.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
