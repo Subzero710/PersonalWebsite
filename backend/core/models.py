@@ -8,7 +8,7 @@ class SiteConfig(models.Model):
     email = models.EmailField(blank=True)
     github_url = models.URLField(blank=True)
     cv_file = models.FileField(upload_to="cv/", blank=True, null=True)
-
+    avatar = models.ImageField(upload_to="avatar/", blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:

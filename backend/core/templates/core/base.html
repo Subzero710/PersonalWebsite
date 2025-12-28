@@ -13,7 +13,18 @@
   <header class="site-header">
     <div class="container navbar">
       <a class="brand" href="/">
-        <span class="brand-badge"></span>
+        {% if config and config.avatar %}
+        <img
+          class="brand-avatar"
+          src="{{ config.avatar.url }}"
+          alt="{{ config.full_name|default:'Portfolio' }} avatar"
+          width="36"
+          height="36"
+          loading="lazy"
+        />
+      {% else %}
+        <span class="brand-badge" aria-hidden="true"></span>
+      {% endif %}
         <span class="brand-text">{{ config.full_name|default:"Portfolio" }}</span>
       </a>
 
