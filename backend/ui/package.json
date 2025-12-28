@@ -3,10 +3,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --format=esm --target=es2020 --minify --sourcemap --outfile=../core/static/core/dist/main.js",
-    "dev": "esbuild src/main.ts --bundle --format=esm --target=es2020 --sourcemap --outfile=../core/static/core/dist/main.js --watch"
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "esbuild src/main.ts --bundle --format=esm --target=es2020 --minify --sourcemap --outfile=../core/static/core/dist/main.js",
+    "build:css": "esbuild src/styles/main.css --bundle --minify --sourcemap --outfile=../core/static/core/dist/site.css",
+
+    "dev": "concurrently -n js,css \"npm:watch:js\" \"npm:watch:css\"",
+    "watch:js": "esbuild src/main.ts --bundle --format=esm --target=es2020 --sourcemap --outfile=../core/static/core/dist/main.js --watch",
+    "watch:css": "esbuild src/styles/main.css --bundle --sourcemap --outfile=../core/static/core/dist/site.css --watch"
   },
   "devDependencies": {
+    "concurrently": "^9.0.0",
     "esbuild": "^0.25.0",
     "typescript": "^5.7.0"
   }

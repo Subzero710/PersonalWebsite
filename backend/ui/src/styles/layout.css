@@ -1,0 +1,16 @@
+.container{ width:min(var(--max), calc(100% - 32px)); margin-inline:auto; }
+main{ padding: 26px 0 70px; }
+.bg-grid{
+  position:fixed; inset:0; pointer-events:none; z-index:-1;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(80% 60% at 50% 20%, rgba(0,0,0,1), transparent 70%);
+  opacity:.7;
+}
+.muted{ color:var(--muted); }
+.grad{
+  background: linear-gradient(90deg, var(--accent2), var(--accent1), var(--accent3));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}

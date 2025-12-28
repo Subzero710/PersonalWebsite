@@ -27,6 +27,8 @@ COPY . .
 # Copy generated bundle by esbuild
 COPY --from=ui /app/core/static/core/dist/main.js /app/core/static/core/dist/main.js
 COPY --from=ui /app/core/static/core/dist/main.js.map /app/core/static/core/dist/main.js.map
+COPY --from=ui /app/core/static/core/dist/site.css /app/core/static/core/dist/site.css
+COPY --from=ui /app/core/static/core/dist/site.css.map /app/core/static/core/dist/site.css.map
 
 # Entrypoint + user
 RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh

@@ -1,0 +1,21 @@
+.filters{ display:grid; gap:10px; margin-bottom: 12px; }
+.input{
+  width:100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color:var(--text);
+  outline:none;
+}
+.tagbar{ display:flex; gap:8px; flex-wrap:wrap; }
+.tagpill{
+  padding:8px 12px;
+  border-radius: 999px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color:var(--muted);
+  font-weight:900;
+  cursor:pointer;
+}
+.tagpill.is-active{ background: rgba(255,255,255,.08); color:var(--text); }

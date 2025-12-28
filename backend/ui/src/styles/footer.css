@@ -1,0 +1,4 @@
+.site-footer{ border-top:1px solid var(--line); padding:22px 0; margin-top: 36px; }
+.footer-row{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.link{ color:var(--muted); text-decoration:none; }
+.link:hover{ color:var(--text); text-decoration:underline; }

@@ -1,0 +1,4 @@
+@media (max-width: 900px){
+  .navlinks{ display:none; }
+  .hero{ grid-template-columns: 1fr; }
+}
