@@ -21,9 +21,10 @@
     {% endif %}
 
     {% if project.description %}
-      <div class="prose">
-        {{ project.description|linebreaks }}
-      </div>
+        {% load markdown_extras %}
+        <div class="prose">
+          {{ project.description|markdown_safe }}
+        </div>
     {% endif %}
   </div>
 </section>

@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import SiteConfig, Highlight, KPI, Project, Tag
+from django.db import models
+from django.forms import Textarea
+from .models import Project
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -16,6 +19,9 @@ class ProjectAdmin(admin.ModelAdmin):
     ordering = ("order", "-created_at")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
+    formfield_overrides = {
+        models.TextField: {"widget": Textarea(attrs={"rows": 18, "style": "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"})}
+    }
 
 class HighlightInline(admin.TabularInline):
     model = Highlight
