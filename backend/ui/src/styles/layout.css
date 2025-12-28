@@ -7,7 +7,7 @@ main{ padding: 26px 0 70px; }
     linear-gradient(to bottom, rgba(255,255,255,.04) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(80% 60% at 50% 20%, rgba(0,0,0,1), transparent 70%);
-  opacity:.7;
+  opacity:.4;
 }
 .muted{ color:var(--muted); }
 .grad{

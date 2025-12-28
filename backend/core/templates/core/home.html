@@ -25,23 +25,21 @@
     </div>
   </div>
 
-  <div class="hero-card reveal">
-    <div class="hero-card-head">
-      <div class="hero-card-dot"></div>
-      <div>
-        <div class="hero-card-title">Highlights</div>
-        <div class="hero-card-sub">What I’m currently focusing on</div>
+    <div class="hero-card reveal">
+      <div class="hero-card-head">
+        <div>
+          <div class="hero-card-title">Highlights</div>
+        </div>
+      </div>
+
+      <div class="highlight-list">
+        {% for h in highlights %}
+          <div class="highlight-item">{{ h.text }}</div>
+        {% empty %}
+          <div class="highlight-item muted">Add highlights in the admin panel.</div>
+        {% endfor %}
       </div>
     </div>
-
-    <ul class="bullets">
-      {% for h in highlights %}
-        <li>{{ h.text }}</li>
-      {% empty %}
-        <li>Add highlights from the admin panel.</li>
-      {% endfor %}
-    </ul>
-  </div>
 </section>
 
 <section class="section">
