@@ -56,3 +56,27 @@ class Project(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+class Highlight(models.Model):
+    site = models.ForeignKey("SiteConfig", related_name="highlights", on_delete=models.CASCADE)
+    text = models.CharField(max_length=200)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self) -> str:
+        return self.text
+
+
+class KPI(models.Model):
+    site = models.ForeignKey("SiteConfig", related_name="kpis", on_delete=models.CASCADE)
+    value = models.CharField(max_length=32)
+    label = models.CharField(max_length=32)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self) -> str:
+        return f"{self.value} — {self.label}"

@@ -1,11 +1,5 @@
 from django.contrib import admin
-from .models import SiteConfig, Tag, Project
-
-
-@admin.register(SiteConfig)
-class SiteConfigAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "headline", "email", "updated_at")
-
+from .models import SiteConfig, Highlight, KPI, Project, Tag
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -22,3 +16,18 @@ class ProjectAdmin(admin.ModelAdmin):
     ordering = ("order", "-created_at")
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ("tags",)
+
+class HighlightInline(admin.TabularInline):
+    model = Highlight
+    extra = 1
+    ordering = ("order",)
+
+class KPIInline(admin.TabularInline):
+    model = KPI
+    extra = 1
+    ordering = ("order",)
+
+@admin.register(SiteConfig)
+class SiteConfigAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "headline", "email", "updated_at")
+    inlines = [HighlightInline, KPIInline]

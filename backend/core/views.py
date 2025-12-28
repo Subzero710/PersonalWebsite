@@ -1,13 +1,20 @@
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import Project, SiteConfig, Tag
+from .models import SiteConfig, Project, Highlight, KPI, Tag
 
 
 def home(request):
     config = SiteConfig.objects.order_by("-updated_at").first()
-    featured = Project.objects.filter(is_featured=True)[:6]
-    return render(request, "core/home.html", {"config": config, "featured": featured})
+    featured = Project.objects.filter(is_featured=True).order_by("-created_at")[:6]
 
+    highlights = Highlight.objects.filter(site=config) if config else []
+    kpis = KPI.objects.filter(site=config) if config else []
+
+    return render(
+        request,
+        "core/home.html",
+        {"config": config, "featured": featured, "highlights": highlights, "kpis": kpis},
+    )
 
 def projects_list(request):
     config = SiteConfig.objects.order_by("-updated_at").first()

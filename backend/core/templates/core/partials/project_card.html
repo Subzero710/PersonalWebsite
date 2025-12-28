@@ -2,20 +2,30 @@
    href="{% url 'project_detail' project.slug %}"
    data-title="{{ project.title|lower }}"
    data-tags="{% for t in project.tags.all %}{{ t.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
-  <div class="card-top">
-    <h3 class="card-title">{{ project.title }}</h3>
-    <span class="card-pill">{% if project.repo_url %}repo{% else %}project{% endif %}</span>
+
+  <div class="card-head">
+    <div>
+      <h3 class="card-title">{{ project.title }}</h3>
+      {% if project.summary %}
+        <p class="card-summary">{{ project.summary }}</p>
+      {% endif %}
+    </div>
+    <div class="card-arrow" aria-hidden="true">→</div>
   </div>
 
-  {% if project.summary %}
-    <p class="card-summary">{{ project.summary }}</p>
-  {% endif %}
+  <div class="card-foot">
+    {% if project.tags.all %}
+      <div class="chips">
+        {% for t in project.tags.all %}
+          <span class="chip">{{ t.name }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-  {% if project.tags.all %}
-    <div class="chips">
-      {% for t in project.tags.all %}
-        <span class="chip">{{ t.name }}</span>
-      {% endfor %}
+    <div class="pills">
+      {% if project.repo_url %}<span class="pill">repo</span>{% endif %}
+      {% if project.demo_url %}<span class="pill pill-primary">demo</span>{% endif %}
     </div>
-  {% endif %}
+  </div>
+
 </a>

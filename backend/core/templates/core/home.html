@@ -16,9 +16,12 @@
     </div>
 
     <div class="kpis">
-      <div class="kpi"><div class="n">{{ featured|length }}</div><div class="l">featured</div></div>
-      <div class="kpi"><div class="n">Django</div><div class="l">SSR</div></div>
-      <div class="kpi"><div class="n">Docker</div><div class="l">deploy</div></div>
+      {% for k in kpis %}
+        <div class="kpi">
+          <div class="n">{{ k.value }}</div>
+          <div class="l">{{ k.label }}</div>
+        </div>
+      {% endfor %}
     </div>
   </div>
 
@@ -32,9 +35,11 @@
     </div>
 
     <ul class="bullets">
-      <li>Stack: Django + Postgres + Nginx + Gunicorn</li>
-      <li>UI: templates + bundled TS (single main.js)</li>
-      <li>Admin-first: content is managed via Django Admin</li>
+      {% for h in highlights %}
+        <li>{{ h.text }}</li>
+      {% empty %}
+        <li>Add highlights from the admin panel.</li>
+      {% endfor %}
     </ul>
   </div>
 </section>
