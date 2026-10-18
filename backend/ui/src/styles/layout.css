@@ -17,8 +17,13 @@
 .highlight-list li { position:relative; padding-left:24px; color:var(--text-secondary); line-height:1.42; }
 .highlight-list li::before { content:''; position:absolute; top:8px; left:4px; width:6px; height:6px; background:var(--accent-primary); border-radius:50%; }
 .tech-list { display:flex; gap:8px; flex-wrap:wrap; }
-.tech-badge { display:inline-flex; align-items:center; gap:9px; min-height:37px; border:1px solid var(--border-default); border-radius:var(--radius-md); background:var(--bg-secondary); padding:6px 10px; color:var(--text-secondary); font-size:13px; }
-.tech-icon { width:19px; height:19px; object-fit:contain; flex-shrink:0; }
+.tech-badge { display:inline-flex; align-items:center; gap:9px; min-height:41px; border:1px solid var(--border-default); border-radius:var(--radius-md); background:var(--bg-secondary); padding:7px 12px; color:var(--text-secondary); font-size:14px; }
+.tech-icon { display:block; width:22px; height:22px; object-fit:contain; flex-shrink:0; }
+/* Monochrome marks must remain legible against dark backgrounds. */
+:root:not([data-theme="light"]) img.tech-icon[src$="/core/icons/skills/django.svg"],
+:root:not([data-theme="light"]) img.tech-icon[src$="/core/icons/skills/vercel.svg"],
+:root:not([data-theme="light"]) img.tech-icon[src$="/core/icons/skills/github.svg"] { filter:brightness(0) invert(1); }
+:root:not([data-theme="light"]) img.tech-icon[src$="/core/icons/skills/nextjs.svg"] { filter:invert(1); }
 .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:11px; padding:0; margin:0; }
 .kpi-item { padding:12px 14px; border:1px solid var(--border-default); border-radius:var(--radius-md); background:var(--bg-secondary); }
 .kpi-item dt { font-size:12px; color:var(--text-muted); } .kpi-item dd { font-size:19px; font-weight:700; margin:5px 0 0; }
@@ -26,7 +31,8 @@
 .empty-state { margin-top:15px; padding:16px; border:1px dashed var(--border-default); border-radius:var(--radius-md); color:var(--text-secondary); }
 .empty-state a { color:var(--link-color); }
 .section-heading { display:flex; justify-content:space-between; align-items:center; gap:14px; }
-.detail-chips { margin-top:18px; }
+/* More specific than .chips { margin-top:auto } in cards.css. */
+#project-overview .chips.detail-chips { margin-top:24px; }
 .resource-list { padding-left:20px; margin:0; }.resource-list li { margin-bottom:8px; }
 .back-link { border-top:1px solid var(--border-subtle); margin-top:30px; padding:20px 0; }.back-link a { color:var(--text-secondary); }.back-link a:hover { color:var(--accent-primary); }
 .btn-resume { color:var(--accent-primary); background:var(--bg-secondary); border-color:var(--accent-primary) !important; font-weight:700; }.btn-resume:hover { background:var(--accent-soft); }
