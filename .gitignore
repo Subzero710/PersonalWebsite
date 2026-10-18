@@ -1,5 +1,5 @@
 .env
 /.venv/
 /backend/core/static/core/dist/
-/backend/core/migrations/
 .idea
+/.frontend-backups/
