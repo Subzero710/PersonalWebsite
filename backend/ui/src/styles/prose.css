@@ -1,106 +1,22 @@
-.prose{
-  max-width: 80%;
-  color: rgba(233,238,252,.86);
-}
 
-.prose > *{
-  margin: 0 0 12px;
-}
-
-.prose h1, .prose h2, .prose h3, .prose h4{
-  margin: 18px 0 10px;
-  line-height: 1.2;
-  letter-spacing: -.01em;
-}
-
-.prose h1{ font-size: 28px; }
-.prose h2{ font-size: 22px; }
-.prose h3{ font-size: 18px; }
-.prose h4{ font-size: 16px; }
-
-.prose p{
-  margin: 0 0 12px;
-  color: rgba(233,238,252,.82);
-}
-
-.prose a{
-  color: rgba(6,182,212,.92);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(6,182,212,.30);
-}
-.prose a:hover{
-  border-bottom-color: rgba(6,182,212,.65);
-}
-
-.prose ul, .prose ol{
-  margin: 0 0 12px 18px;
-  padding: 0;
-}
-.prose li{
-  margin: 6px 0;
-  color: rgba(233,238,252,.82);
-}
-
-.prose blockquote{
-  margin: 14px 0;
-  padding: 10px 12px;
-  border-left: 3px solid rgba(255,255,255,.16);
-  background: rgba(255,255,255,.05);
-  border-radius: 10px;
-  color: rgba(233,238,252,.78);
-}
-
-.prose hr{
-  border: 0;
-  height: 1px;
-  background: rgba(255,255,255,.12);
-  margin: 18px 0;
-}
-
-.prose code{
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 12px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.10);
-  padding: 2px 6px;
-  border-radius: 8px;
-  color: rgba(233,238,252,.88);
-}
-
-.prose pre{
-  margin: 14px 0;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(0,0,0,.22);
-  border: 1px solid rgba(255,255,255,.10);
-  overflow: auto;
-  box-shadow: 0 14px 45px rgba(0,0,0,.35);
-}
-
-.prose pre code{
-  background: transparent;
-  border: 0;
-  padding: 0;
-  font-size: 12px;
-  color: rgba(233,238,252,.88);
-  white-space: pre;
-}
-
-.prose table{
-  width: 100%;
-  border-collapse: collapse;
-  margin: 14px 0;
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 14px;
-  overflow: hidden;
-}
-.prose th, .prose td{
-  padding: 10px 12px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  color: rgba(233,238,252,.82);
-}
-.prose th{
-  text-align: left;
-  background: rgba(255,255,255,.05);
-  color: rgba(233,238,252,.92);
-}
+.prose { color: var(--text-secondary); font-size: 14px; line-height: 1.85; max-width: 100%; overflow-wrap: anywhere; }
+.prose > * { margin: 0 0 18px; }
+.prose h1, .prose h2, .prose h3, .prose h4 { color: var(--text-primary); margin: 28px 0 12px; scroll-margin-top: 100px; }
+.prose h1 { font-size: 22px; }
+.prose h2 { font-size: 19px; }
+.prose h3 { font-size: 16px; }
+.prose h4 { font-size: 14px; }
+.prose p, .prose li { color: var(--text-secondary); }
+.prose a { color: var(--link-color); text-decoration: underline; text-decoration-color: rgba(134,173,255,.35); text-underline-offset: 3px; }
+.prose a:hover { text-decoration-color: currentColor; }
+.prose ul, .prose ol { padding-left: 22px; }
+.prose li { margin-bottom: 6px; }
+.prose blockquote { border-left: 3px solid var(--border-default); background: var(--bg-secondary); padding: 9px 15px; margin-left: 0; }
+.prose hr { border: 0; border-top: 1px solid var(--border-default); }
+.prose code { font: 12px/1.6 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; background: var(--bg-tertiary); color: #c8e5ad; border-radius: var(--radius-sm); padding: 2px 4px; }
+.prose pre { max-width: 100%; overflow-x: auto; background: var(--bg-secondary); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 16px; }
+.prose pre code { color: var(--text-primary); background: none; padding: 0; white-space: pre; }
+.prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.prose th, .prose td { text-align: left; padding: 8px 12px; border: 1px solid var(--border-default); }
+.prose th { background: var(--bg-tertiary); color: var(--text-primary); }
+.prose img { max-width: 100%; height: auto; }

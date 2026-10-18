@@ -1,28 +1,26 @@
+
 {% extends "core/base.html" %}
-{% block title %}Projets{% endblock %}
+{% block title %}Projects{% endblock %}
 {% block content %}
-
-<section class="section">
-  <div class="section-head">
-    <h1 style="margin:0">Projects</h1>
-    <div class="muted">{{ projects|length }} projects</div>
-  </div>
-
-  <div class="filters reveal">
-    <input class="input" id="projectSearch" type="search" placeholder="Search (title)…" autocomplete="off" />
-    <div class="tagbar" id="tagBar">
-      <button class="tagpill is-active" data-tag="all">All</button>
-      {% for t in tags %}
-        <button class="tagpill" data-tag="{{ t.slug }}">{{ t.name }}</button>
-      {% endfor %}
+<header class="page-intro" id="projects-intro" data-toc-section data-toc-title="Projects">
+  <div class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> Work</div>
+  <h1>Projects</h1>
+  <p class="page-lead">Browse projects and filter by name or technology.</p>
+</header>
+<section class="content-section" id="project-directory" data-toc-section data-toc-title="Project directory">
+  <div class="section-heading"><h2>Project directory</h2><span class="result-count" id="projectCount" role="status" aria-live="polite">{{ projects|length }} projects</span></div>
+  <div class="filters">
+    <label class="sr-only" for="projectSearch">Search project name or tag</label>
+    <input class="input" id="projectSearch" type="search" placeholder="Search projects or tags..." autocomplete="off">
+    <div class="tagbar" id="tagBar" role="group" aria-label="Filter by technology">
+      <button type="button" class="tagpill is-active" data-tag="all" aria-pressed="true">All</button>
+      {% for t in tags %}<button type="button" class="tagpill" data-tag="{{ t.slug }}" aria-pressed="false">{{ t.name }}</button>{% endfor %}
     </div>
   </div>
-
-  <div class="grid" id="projectsGrid">
-    {% for p in projects %}
-      {% include "core/partials/project_card.html" with project=p %}
-    {% endfor %}
+  <div class="projects-grid" id="projectsGrid">
+    {% for p in projects %}{% include "core/partials/project_card.html" with project=p %}{% endfor %}
   </div>
+  <div class="empty-state" id="noProjectMatches" hidden>No projects match your filters. <button type="button" id="resetProjectFilters" class="text-button">Clear filters</button></div>
+  {% if not projects %}<div class="empty-state" id="noProjects">No projects published yet.</div>{% endif %}
 </section>
-
 {% endblock %}

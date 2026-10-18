@@ -1,6 +1,14 @@
-export function setupActiveNav() {
-  const path = location.pathname;
-  document.querySelectorAll<HTMLAnchorElement>(".navlinks a").forEach((a) => {
-    if (a.getAttribute("href") === path) a.classList.add("is-active");
+
+export function setupActiveNav(): void {
+  const path = window.location.pathname;
+  const active = path === "/" ? "home" : path.startsWith("/projects/") ? "projects" : "";
+  if (!active) return;
+  document.querySelectorAll<HTMLAnchorElement>(".side-link[data-nav]").forEach((link) => {
+    if (link.dataset.nav === active) {
+      link.classList.add("is-active");
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
   });
 }
