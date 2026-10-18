@@ -3,9 +3,28 @@ from django.utils.text import slugify
 
 # Icon values select visual assets, never project/skill content.
 ICON_CHOICES = [
-    ('', 'No icon'), ('cloud', 'Cloud'), ('code', 'Code'), ('globe', 'Web'),
-    ('terminal', 'Terminal'), ('server', 'Server'), ('database', 'Database'),
-    ('layers', 'Layers'), ('package', 'Package'), ('settings', 'Settings'),
+    ('', 'Default cube'),
+    ('package', 'Package / cube'), ('cloud', 'Cloud'), ('code', 'Code / brackets'),
+    ('globe', 'Website / globe'), ('terminal', 'Terminal'), ('server', 'Server'),
+    ('database', 'Database'), ('layers', 'Layers'), ('settings', 'Settings'),
+    ('kanban', 'Kanban board'), ('columns', 'Columns / dashboard'),
+    ('chat', 'Chat / conversation'), ('message-square', 'Messages'),
+    ('users', 'Users / collaboration'), ('rocket', 'Launch / deployment'),
+    ('shield', 'Security'), ('lock', 'Authentication'),
+    ('chart', 'Charts / analytics'), ('bot', 'Automation / bot'),
+    ('workflow', 'Workflow'), ('git-branch', 'Git / branches'),
+    ('cpu', 'Hardware / compute'), ('smartphone', 'Mobile application'),
+    ('monitor', 'Desktop application'), ('book-open', 'Documentation'),
+    ('gamepad', 'Game'), ('network', 'Network'), ('wrench', 'Tools'),
+    ('folder-open', 'Files'), ('api', 'API / integration'),
+]
+SOCIAL_PLATFORM_CHOICES = [
+    ('github', 'GitHub'), ('linkedin', 'LinkedIn'), ('gitlab', 'GitLab'),
+    ('x', 'X / Twitter'), ('bluesky', 'Bluesky'), ('mastodon', 'Mastodon'),
+    ('discord', 'Discord'), ('youtube', 'YouTube'), ('instagram', 'Instagram'),
+    ('reddit', 'Reddit'), ('stackoverflow', 'Stack Overflow'),
+    ('devto', 'DEV Community'), ('medium', 'Medium'), ('twitch', 'Twitch'),
+    ('website', 'Personal website'), ('globe', 'Other website'),
 ]
 SKILL_ICON_CHOICES = [
     ('', 'Use uploaded icon / text only'),
@@ -113,3 +132,23 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SocialLink(models.Model):
+    """User-configured public contact destinations, attached to SiteConfig."""
+    site = models.ForeignKey(SiteConfig, related_name='social_links', on_delete=models.CASCADE)
+    platform = models.CharField(max_length=24, choices=SOCIAL_PLATFORM_CHOICES)
+    label = models.CharField(max_length=80, blank=True, help_text='Optional display name.')
+    url = models.URLField(max_length=500)
+    order = models.PositiveIntegerField(default=0)
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    @property
+    def display_name(self):
+        return self.label or self.get_platform_display()
+
+    def __str__(self):
+        return self.display_name

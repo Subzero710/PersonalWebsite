@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
-from .models import SiteConfig, Project, Tag, Highlight, KPI, Skill
+from .models import SiteConfig, Project, Tag, Highlight, KPI, Skill, SocialLink
 
 
 @admin.register(Tag)
@@ -44,6 +44,13 @@ class SkillInline(admin.TabularInline):
     fields = ('name', 'icon_key', 'icon_image', 'order', 'is_visible')
 
 
+class SocialLinkInline(admin.TabularInline):
+    model = SocialLink
+    extra = 0
+    ordering = ('order',)
+    fields = ('platform', 'label', 'url', 'order', 'is_visible')
+
+
 @admin.register(SiteConfig)
 class SiteConfigAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'headline', 'updated_at')
@@ -53,4 +60,4 @@ class SiteConfigAdmin(admin.ModelAdmin):
                        'description': 'Only configured text appears on the website. The biography accepts Markdown.'}),
         ('Links', {'fields': ('email', 'github_url', 'cv_file')}),
     )
-    inlines = (SkillInline, HighlightInline, KPIInline)
+    inlines = (SkillInline, SocialLinkInline, HighlightInline, KPIInline)

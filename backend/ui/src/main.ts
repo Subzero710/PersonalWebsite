@@ -6,6 +6,7 @@ import { setupGlobalSearch } from "./ui/globalSearch";
 import { setupMobileNav } from "./ui/mobileNav";
 import { setupTableOfContents } from "./ui/toc";
 import { setupTheme } from "./ui/theme";
+import { setupContactPopover } from "./ui/contactPopover";
 
 setupActiveNav();
 setupProjectFilters();
@@ -14,3 +15,5 @@ setupGlobalSearch();
 setupMobileNav();
 setupTableOfContents();
 setupTheme();
+
+setupContactPopover();

@@ -27,7 +27,23 @@
       <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
     </form>
     <div class="header-actions">
-      {% if config and config.email %}<a class="btn btn-primary header-contact" href="mailto:{{ config.email }}">Let's Connect {% include 'core/partials/icon.html' with name='arrow-right' %}</a>{% endif %}
+      {% if contact_links %}
+      <div class="connect-wrap" id="connectMenu">
+        <button class="btn btn-primary header-contact" type="button" id="connectTrigger" aria-expanded="false" aria-controls="connectPanel">
+          <span>Let's Connect</span>{% include 'core/partials/icon.html' with name='arrow-right' %}
+        </button>
+        <div class="connect-panel" id="connectPanel" aria-label="Contact and social links" hidden>
+          <div class="connect-panel-heading">Find me online</div>
+          {% for link in contact_links %}
+          <a class="connect-option" href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+            {% include 'core/partials/icon.html' with name=link.icon %}
+            <span>{{ link.label }}</span>
+            {% include 'core/partials/icon.html' with name='external-link' icon_class='connect-option-arrow' %}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false" title="Toggle color theme">
         <span class="theme-icon-moon">{% include 'core/partials/icon.html' with name='moon' %}</span>
         <span class="theme-icon-sun">{% include 'core/partials/icon.html' with name='sun' %}</span>
@@ -41,8 +57,8 @@
         <div class="side-group">
           <div class="side-group-label">Getting Started</div>
           <a class="side-link" data-nav="home" href="{% url 'home' %}">{% include 'core/partials/icon.html' with name='home' %}<span>Overview</span></a>
-          {% if config and config.bio %}<a class="side-link" href="{% url 'home' %}#about">{% include 'core/partials/icon.html' with name='user' %}<span>About</span></a>{% endif %}
-          {% if has_skills %}<a class="side-link" href="{% url 'home' %}#tech-stack">{% include 'core/partials/icon.html' with name='layers' %}<span>Tech Stack</span></a>{% endif %}
+          <a class="side-link" data-nav="about" href="{% url 'about' %}">{% include 'core/partials/icon.html' with name='user' %}<span>About</span></a>
+          <a class="side-link" data-nav="tech-stack" href="{% url 'tech_stack' %}">{% include 'core/partials/icon.html' with name='layers' %}<span>Tech Stack</span></a>
         </div>
         <div class="side-group">
           <a class="side-group-label side-group-heading-link" data-nav="projects" href="{% url 'projects_list' %}">Projects</a>
@@ -54,12 +70,17 @@
           <a class="side-link" data-nav="projects" href="{% url 'projects_list' %}">{% include 'core/partials/icon.html' with name='grid' %}<span>All projects</span></a>
           {% endfor %}
         </div>
-        {% if config and config.cv_file or config.github_url or config.email %}
+        {% if config and config.cv_file or config.github_url or config.email or extra_social_links %}
         <div class="side-group">
           <div class="side-group-label">Links</div>
           {% if config.cv_file %}<a class="side-link" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' %}<span>Resume</span></a>{% endif %}
           {% if config.github_url %}<a class="side-link" href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">{% include 'core/partials/icon.html' with name='github' %}<span>GitHub</span></a>{% endif %}
           {% if config.email %}<a class="side-link" href="mailto:{{ config.email }}">{% include 'core/partials/icon.html' with name='mail' %}<span>Contact</span></a>{% endif %}
+          {% for social in extra_social_links %}
+          <a class="side-link" href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
+            {% include 'core/partials/icon.html' with name=social.platform %}<span>{{ social.display_name }}</span>
+          </a>
+          {% endfor %}
         </div>
         {% endif %}
       </nav>

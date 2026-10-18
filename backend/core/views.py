@@ -1,6 +1,6 @@
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag
+from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink
 
 
 def _site_context():
@@ -18,9 +18,32 @@ def _site_context():
                       .annotate(project_count=Count('projects', distinct=True))
                       .order_by('-project_count', 'name').distinct()[:7])
         skills_from_tags = bool(skills)
+    # Reuse configured email/GitHub and expose every visible SocialLink.
+    # De-duplicate identical destinations without adding placeholder accounts.
+    contact_links = []
+    extra_social_links = []
+    seen_urls = set()
+
+    def append_contact(label, url, icon, external=True):
+        url = (url or '').strip()
+        if not url or url.casefold() in seen_urls:
+            return False
+        seen_urls.add(url.casefold())
+        contact_links.append({'label': label, 'url': url, 'icon': icon, 'external': external})
+        return True
+
+    if config:
+        append_contact('GitHub', config.github_url, 'github')
+        if config.email:
+            append_contact('Email', f'mailto:{config.email}', 'mail', False)
+        for social in SocialLink.objects.filter(site=config, is_visible=True).order_by('order', 'id'):
+            if append_contact(social.display_name, social.url, social.platform):
+                extra_social_links.append(social)
+
     return {'config': config, 'nav_projects': nav_projects,
             'skills': skills, 'skills_from_tags': skills_from_tags,
-            'has_skills': bool(skills)}
+            'has_skills': bool(skills), 'contact_links': contact_links,
+            'extra_social_links': extra_social_links}
 
 
 def home(request):
@@ -32,6 +55,17 @@ def home(request):
         'kpis': KPI.objects.filter(site=config) if config else KPI.objects.none(),
     })
     return render(request, 'core/home.html', context)
+
+
+def about(request):
+    context = _site_context()
+    config = context['config']
+    context['highlights'] = Highlight.objects.filter(site=config) if config else Highlight.objects.none()
+    return render(request, 'core/about.html', context)
+
+
+def tech_stack(request):
+    return render(request, 'core/tech_stack.html', _site_context())
 
 
 def projects_list(request):
