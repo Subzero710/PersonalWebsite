@@ -7,8 +7,6 @@ export function setupActiveNav(): void {
   const update = (): void => {
     const pathname = normalizePath(window.location.pathname);
     const currentHash = decodeURIComponent(window.location.hash);
-    // Prefer an explicit matching anchor when one is present in the sidebar;
-    // otherwise keep the current page highlighted while its TOC changes hash.
     const hasMatchingAnchor = !!currentHash && links.some((link) => {
       const target = new URL(link.href, window.location.href);
       return normalizePath(target.pathname) === pathname &&
@@ -17,20 +15,25 @@ export function setupActiveNav(): void {
     for (const link of links) {
       const target = new URL(link.href, window.location.href);
       const targetPath = normalizePath(target.pathname);
-      const isProject = !!link.dataset.projectSlug;
-      const projectIndex = link.dataset.nav === "projects";
-      const matchesPath = targetPath === pathname;
-      const matchesHash = !!target.hash && decodeURIComponent(target.hash) === currentHash;
-      const active = isProject
-        ? matchesPath
-        : projectIndex
-          ? pathname === "/projects" || pathname.startsWith("/projects/")
-          : matchesPath && (target.hash ? matchesHash : !hasMatchingAnchor);
+      const samePath = targetPath === pathname;
+      const isAnchor = Boolean(target.hash);
+      const matchesAnchor = isAnchor && decodeURIComponent(target.hash) === currentHash;
+      const active = isAnchor
+        ? samePath && matchesAnchor
+        : link.dataset.projectSlug
+          ? samePath
+          : link.dataset.nav === "projects"
+            ? pathname === "/projects" || pathname.startsWith("/projects/")
+            : samePath && !hasMatchingAnchor;
       link.classList.toggle("is-active", active);
-      if (active) link.setAttribute("aria-current", target.hash ? "location" : "page");
+      if (active) link.setAttribute("aria-current", isAnchor ? "location" : "page");
       else link.removeAttribute("aria-current");
     }
   };
+  document.addEventListener("click", (event: MouseEvent) => {
+    if (!(event.target instanceof Element)) return;
+    if (event.target.closest("a[href*='#']")) requestAnimationFrame(update);
+  });
   window.addEventListener("hashchange", update);
   window.addEventListener("popstate", update);
   update();

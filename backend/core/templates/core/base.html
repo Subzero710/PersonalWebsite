@@ -15,9 +15,12 @@
     <div class="header-brand">
       <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="siteSidebar"><span></span><span></span><span></span></button>
       <a class="brand" href="{% url 'home' %}">
-        <span class="brand-terminal" aria-hidden="true">›_</span>
+        {% if config and config.avatar %}
+        <img class="brand-avatar" src="{{ config.avatar.url }}" alt="" width="36" height="36" decoding="async">
+        {% else %}
+        <span class="brand-avatar-fallback" aria-hidden="true">{% include 'core/partials/icon.html' with name='user' %}</span>
+        {% endif %}
         <span class="brand-name">{{ config.full_name|default:"Portfolio" }}</span>
-        <span class="brand-tag">portfolio</span>
       </a>
     </div>
     <form class="header-search" role="search" action="{% url 'projects_list' %}" method="get">
@@ -28,21 +31,9 @@
     </form>
     <div class="header-actions">
       {% if contact_links %}
-      <div class="connect-wrap" id="connectMenu">
-        <button class="btn btn-primary header-contact" type="button" id="connectTrigger" aria-expanded="false" aria-controls="connectPanel">
-          <span>Let's Connect</span>{% include 'core/partials/icon.html' with name='arrow-right' %}
-        </button>
-        <div class="connect-panel" id="connectPanel" aria-label="Contact and social links" hidden>
-          <div class="connect-panel-heading">Find me online</div>
-          {% for link in contact_links %}
-          <a class="connect-option" href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
-            {% include 'core/partials/icon.html' with name=link.icon %}
-            <span>{{ link.label }}</span>
-            {% include 'core/partials/icon.html' with name='external-link' icon_class='connect-option-arrow' %}
-          </a>
-          {% endfor %}
-        </div>
-      </div>
+      <button class="btn btn-primary header-contact" type="button" id="connectTrigger" data-connect-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="connectPanel">
+        <span>Let's Connect</span>{% include 'core/partials/icon.html' with name='arrow-right' %}
+      </button>
       {% endif %}
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false" title="Toggle color theme">
         <span class="theme-icon-moon">{% include 'core/partials/icon.html' with name='moon' %}</span>
@@ -50,6 +41,29 @@
       </button>
     </div>
   </header>
+  {% if contact_links %}
+  <div class="connect-overlay" id="connectPanel" hidden>
+    <section class="connect-dialog" role="dialog" aria-modal="true" aria-labelledby="connectTitle" aria-describedby="connectDescription" tabindex="-1">
+      <div class="connect-dialog-heading">
+        <div>
+          <div class="connect-eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> CONTACT</div>
+          <h2 id="connectTitle">Let's connect</h2>
+          <p id="connectDescription">Choose where you'd like to reach me.</p>
+        </div>
+        <button type="button" class="connect-close" id="connectClose" aria-label="Close contact window">×</button>
+      </div>
+      <div class="connect-options">
+        {% for link in contact_links %}
+        <a class="connect-option" href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+          <span class="connect-option-icon">{% include 'core/partials/icon.html' with name=link.icon %}</span>
+          <span class="connect-option-name">{{ link.label }}</span>
+          {% include 'core/partials/icon.html' with name='external-link' icon_class='connect-option-arrow' %}
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  {% endif %}
   <div class="site-shell">
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
     <aside class="site-sidebar" id="siteSidebar" aria-label="Primary navigation">
@@ -81,6 +95,9 @@
             {% include 'core/partials/icon.html' with name=social.platform %}<span>{{ social.display_name }}</span>
           </a>
           {% endfor %}
+          {% if contact_links %}
+          <button type="button" class="side-link connect-mobile-action" id="connectMobileTrigger" data-connect-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="connectPanel">{% include 'core/partials/icon.html' with name='mail' %}<span>Let's Connect</span></button>
+          {% endif %}
         </div>
         {% endif %}
       </nav>

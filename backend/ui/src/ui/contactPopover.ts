@@ -1,35 +1,70 @@
 export function setupContactPopover(): void {
-  const wrap = document.querySelector<HTMLElement>("#connectMenu");
-  const trigger = document.querySelector<HTMLButtonElement>("#connectTrigger");
   const panel = document.querySelector<HTMLElement>("#connectPanel");
-  if (!wrap || !trigger || !panel) return;
+  const dialog = panel?.querySelector<HTMLElement>(".connect-dialog");
+  const closeButton = document.querySelector<HTMLButtonElement>("#connectClose");
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-connect-trigger]"));
+  if (!panel || !dialog || !closeButton || triggers.length === 0) return;
 
-  const close = (restoreFocus = false): void => {
+  let previousFocus: HTMLElement | null = null;
+  const isOpen = (): boolean => !panel.hidden;
+  const focusable = (): HTMLElement[] => Array.from(dialog.querySelectorAll<HTMLElement>(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  ));
+
+  const close = (restoreFocus = true): void => {
+    if (!isOpen()) return;
     panel.hidden = true;
-    trigger.setAttribute("aria-expanded", "false");
-    if (restoreFocus) trigger.focus();
-  };
-  const open = (keyboard: boolean): void => {
-    panel.hidden = false;
-    trigger.setAttribute("aria-expanded", "true");
-    if (keyboard) panel.querySelector<HTMLAnchorElement>("a[href]")?.focus();
+    document.body.classList.remove("connect-open");
+    triggers.forEach((trigger) => trigger.setAttribute("aria-expanded", "false"));
+    if (restoreFocus) {
+      const target = previousFocus && previousFocus.getClientRects().length ? previousFocus : triggers[0];
+      target?.focus();
+    }
   };
 
-  trigger.addEventListener("click", (event) => {
-    if (panel.hidden) open(event.detail === 0);
-    else close();
+  const open = (trigger: HTMLButtonElement): void => {
+    if (isOpen()) return;
+    previousFocus = trigger;
+    panel.hidden = false;
+    document.body.classList.add("connect-open");
+    triggers.forEach((button) => button.setAttribute("aria-expanded", "true"));
+    closeButton.focus();
+  };
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", () => isOpen() ? close(false) : open(trigger));
   });
-  document.addEventListener("pointerdown", (event) => {
-    if (event.target instanceof Node && !wrap.contains(event.target)) close();
+  closeButton.addEventListener("click", () => close());
+  panel.addEventListener("pointerdown", (event) => {
+    if (event.target === panel) close();
   });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !panel.hidden) {
+  dialog.addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("a[href]")) close();
+  });
+  document.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (!isOpen()) return;
+    if (event.key === "Escape") {
       event.preventDefault();
-      close(true);
+      close();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const items = focusable();
+    if (!items.length) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+    const first = items[0], last = items[items.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+      event.preventDefault();
+      first.focus();
     }
   });
-  wrap.addEventListener("focusout", (event) => {
-    const next = event.relatedTarget;
-    if (next instanceof Node && !wrap.contains(next)) close();
+  document.addEventListener("focusin", (event) => {
+    if (isOpen() && event.target instanceof Node && !dialog.contains(event.target)) closeButton.focus();
   });
 }

@@ -43,24 +43,47 @@ export function setupTableOfContents(): void {
   nav.hidden = false;
 
   let activeId = "";
-  const update = (): void => {
+  const activate = (id: string): void => {
+    if (activeId === id) return;
+    activeId = id;
+    targets.forEach((item) => {
+      const active = item.target.id === id;
+      item.link.classList.toggle("is-current", active);
+      item.link.classList.toggle("is-active", active);
+      if (active) item.link.setAttribute("aria-current", "location");
+      else item.link.removeAttribute("aria-current");
+    });
+  };
+  const hashTarget = (): string | null => {
+    let id = "";
+    try { id = decodeURIComponent(window.location.hash.slice(1)); }
+    catch { id = window.location.hash.slice(1); }
+    return targets.find((item) => item.target.id === id)?.target.id || null;
+  };
+  const updateOnScroll = (): void => {
     const threshold = 150;
     let current = targets[0];
     for (const item of targets) {
       if (item.target.getBoundingClientRect().top <= threshold) current = item;
       else break;
     }
-    if (activeId === current.target.id) return;
-    activeId = current.target.id;
-    targets.forEach((item) => {
-      const active = item === current;
-      item.link.classList.toggle("is-current", active);
-      if (active) item.link.setAttribute("aria-current", "location");
-      else item.link.removeAttribute("aria-current");
-    });
+    activate(current.target.id);
   };
-  const observer = new IntersectionObserver(update, { rootMargin: "-100px 0px -65% 0px" });
+  container.addEventListener("click", (event: MouseEvent) => {
+    if (!(event.target instanceof Element)) return;
+    const link = event.target.closest<HTMLAnchorElement>("a[href^='#']");
+    if (link) {
+      const id = decodeURIComponent(link.hash.slice(1));
+      if (targets.some((item) => item.target.id === id)) activate(id);
+    }
+  });
+  window.addEventListener("hashchange", () => {
+    const id = hashTarget();
+    if (id) activate(id);
+    else updateOnScroll();
+  });
+  const observer = new IntersectionObserver(updateOnScroll, { rootMargin: "-100px 0px -65% 0px" });
   targets.forEach((item) => observer.observe(item.target));
-  window.addEventListener("scroll", update, { passive: true });
-  update();
+  window.addEventListener("scroll", updateOnScroll, { passive: true });
+  activate(hashTarget() || targets[0].target.id);
 }
