@@ -1,51 +1,52 @@
-
-{% extends "core/base.html" %}
+{% extends 'core/base.html' %}
+{% load markdown_extras %}
 {% block title %}Overview{% endblock %}
 {% block content %}
-<header class="page-intro" id="introduction" data-toc-section data-toc-title="Introduction">
-  <div class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> Overview</div>
-  <h1>{{ config.full_name|default:"Portfolio" }}</h1>
-  <p class="page-lead">{{ config.headline|default:"Developer — projects, stack, contact." }}</p>
-  <div class="intro-actions">
-    <a class="btn btn-primary" href="{% url 'projects_list' %}">View projects <span aria-hidden="true">↗</span></a>
-    {% if config and config.cv_file %}<a class="btn btn-secondary" href="{% url 'cv_download' %}">Download resume <span aria-hidden="true">↓</span></a>{% endif %}
-    {% if config and config.github_url %}<a class="text-link" href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">GitHub ↗</a>{% endif %}
-  </div>
+<header class="page-intro" id="introduction">
+  <div class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> Getting Started</div>
+  <h1>{% if config and config.hero_title %}{{ config.hero_title }}{% else %}{{ config.full_name|default:'Portfolio' }}{% endif %}</h1>
+  {% if config and config.intro %}<p class="page-lead">{{ config.intro|linebreaksbr }}</p>{% elif config and config.headline %}<p class="page-lead">{{ config.headline }}</p>{% endif %}
 </header>
-
+{% if config and config.bio %}
+<section class="content-section" id="about" data-toc-section data-toc-title="About">
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} About</h2>
+  <div class="bio-content prose">{{ config.bio|markdown_safe }}</div>
+</section>
+{% endif %}
+{% if skills %}
+<section class="content-section" id="tech-stack" data-toc-section data-toc-title="Tech stack">
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} Tech stack</h2>
+  <p class="section-caption">Technologies I work with regularly:</p>
+  <div class="tech-list">
+    {% for item in skills %}
+      <span class="tech-badge">{% include 'core/partials/skill_icon.html' with item=item %}<span>{{ item.name }}</span></span>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 {% if highlights %}
 <section class="content-section" id="highlights" data-toc-section data-toc-title="Highlights">
-  <h2>Highlights</h2>
-  <ul class="highlight-list">{% for h in highlights %}<li>{{ h.text }}</li>{% endfor %}</ul>
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} Highlights</h2>
+  <ul class="highlight-list">{% for item in highlights %}<li>{{ item.text }}</li>{% endfor %}</ul>
 </section>
 {% endif %}
-
-{% if kpis %}
-<section class="content-section" id="at-a-glance" data-toc-section data-toc-title="At a glance">
-  <h2>At a glance</h2>
-  <dl class="kpi-grid">{% for k in kpis %}<div class="kpi-item"><dt>{{ k.label }}</dt><dd>{{ k.value }}</dd></div>{% endfor %}</dl>
-</section>
-{% endif %}
-
+{% if featured %}
 <section class="content-section" id="featured-projects" data-toc-section data-toc-title="Featured projects">
-  <div class="section-heading"><h2>Featured projects</h2><a class="text-link" href="{% url 'projects_list' %}">All projects <span aria-hidden="true">↗</span></a></div>
-  {% if featured %}<div class="projects-grid">
-    {% for p in featured %}{% include "core/partials/project_card.html" with project=p %}{% endfor %}
-  </div>{% else %}<div class="empty-state">No featured projects yet. <a href="{% url 'projects_list' %}">Browse all projects</a>.</div>{% endif %}
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} Featured projects</h2>
+  <div class="projects-grid featured-grid">{% for p in featured %}{% include 'core/partials/project_card.html' with project=p %}{% endfor %}</div>
 </section>
-
+{% endif %}
 {% if config and config.cv_file %}
 <section class="content-section" id="resume" data-toc-section data-toc-title="Resume">
-  <h2>Resume</h2>
-  <p class="section-text">View or download my resume.</p>
-  <a class="text-link" href="{% url 'cv_download' %}">Download resume <span aria-hidden="true">↓</span></a>
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} Resume</h2>
+  {% if config.resume_intro %}<p class="section-caption">{{ config.resume_intro|linebreaksbr }}</p>{% endif %}
+  <a class="btn btn-resume" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' %} View Resume {% include 'core/partials/icon.html' with name='arrow-right' %}</a>
 </section>
 {% endif %}
-{% if config and config.email %}
-<section class="content-section" id="contact" data-toc-section data-toc-title="Contact">
-  <h2>Contact</h2>
-  <a class="text-link" href="mailto:{{ config.email }}">{{ config.email }}</a>
-  <button type="button" class="inline-copy" data-copy="{{ config.email }}">Copy email</button>
+{% if kpis %}
+<section class="content-section secondary-details" id="at-a-glance" data-toc-section data-toc-title="At a glance">
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} At a glance</h2>
+  <dl class="kpi-grid">{% for item in kpis %}<div class="kpi-item"><dt>{{ item.label }}</dt><dd>{{ item.value }}</dd></div>{% endfor %}</dl>
 </section>
 {% endif %}
 {% endblock %}

@@ -1,0 +1,39 @@
+from django.contrib import admin
+from .models import SiteConfig, Highlight, KPI, Project, Tag
+from django.db import models
+from django.forms import Textarea
+from .models import Project
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+    search_fields = ("name",)
+    prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_featured", "order", "updated_at")
+    list_filter = ("is_featured", "tags")
+    search_fields = ("title", "summary", "description")
+    ordering = ("order", "-created_at")
+    prepopulated_fields = {"slug": ("title",)}
+    filter_horizontal = ("tags",)
+    formfield_overrides = {
+        models.TextField: {"widget": Textarea(attrs={"rows": 18, "style": "font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"})}
+    }
+
+class HighlightInline(admin.TabularInline):
+    model = Highlight
+    extra = 1
+    ordering = ("order",)
+
+class KPIInline(admin.TabularInline):
+    model = KPI
+    extra = 1
+    ordering = ("order",)
+
+@admin.register(SiteConfig)
+class SiteConfigAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "headline", "email", "updated_at")
+    inlines = [HighlightInline, KPIInline]

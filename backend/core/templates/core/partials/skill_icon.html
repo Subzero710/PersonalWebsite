@@ -1,0 +1,1 @@
+{% load static %}{% if item.icon_image %}<img class="tech-icon" src="{{ item.icon_image.url }}" alt="" loading="lazy" width="19" height="19">{% elif item.icon_key %}{% with asset='core/icons/skills/'|add:item.icon_key|add:'.svg' %}<img class="tech-icon" src="{% static asset %}" alt="" loading="lazy" width="19" height="19">{% endwith %}{% endif %}

@@ -1,0 +1,10 @@
+
+.filters { display: grid; gap: 16px; margin-bottom: 22px; }
+.input { width: 100%; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 10px 13px; font-size: 13px; }
+.input::placeholder { color: var(--text-muted); }
+.input:focus { border-color: var(--accent-primary); outline: none; box-shadow: 0 0 0 1px var(--accent-soft); }
+.tagbar { display: flex; flex-wrap: wrap; gap: 7px; }
+.tagpill { border: 1px solid var(--border-default); border-radius: var(--radius-md); color: var(--text-secondary); background: var(--bg-secondary); padding: 6px 10px; font-size: 12px; }
+.tagpill:hover { color: var(--text-primary); border-color: #405264; }
+.tagpill.is-active { color: var(--accent-primary); background: var(--accent-soft); border-color: rgba(142,232,91,.4); }
+.result-count { font-size: 12px; color: var(--text-muted); }

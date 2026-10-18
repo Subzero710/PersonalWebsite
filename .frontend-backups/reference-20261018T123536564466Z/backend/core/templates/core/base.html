@@ -1,0 +1,83 @@
+
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d12">
+  <title>{% block title %}{{ config.full_name|default:"Portfolio" }}{% endblock %} · {{ config.full_name|default:"Portfolio" }}</title>
+  <link rel="stylesheet" href="{% static 'core/dist/site.css' %}">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="header-brand">
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="siteSidebar">
+        <span></span><span></span><span></span>
+      </button>
+      <a class="brand" href="{% url 'home' %}">
+        {% if config and config.avatar %}<img class="brand-avatar" src="{{ config.avatar.url }}" alt="" width="28" height="28">{% else %}<span class="brand-symbol" aria-hidden="true">›_</span>{% endif %}
+        <span class="brand-name">{{ config.full_name|default:"Portfolio" }}</span>
+      </a>
+    </div>
+    <form class="header-search" role="search" action="{% url 'projects_list' %}" method="get">
+      <label class="sr-only" for="globalSearch">Search projects</label>
+      <span class="search-icon" aria-hidden="true">⌕</span>
+      <input id="globalSearch" name="q" type="search" placeholder="Search projects..." autocomplete="off">
+      <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
+    </form>
+    <div class="header-actions">
+      {% if config and config.github_url %}<a class="header-link" href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">GitHub <span aria-hidden="true">↗</span></a>{% endif %}
+      {% if config and config.email %}<a class="btn btn-primary header-contact" href="mailto:{{ config.email }}">Contact <span aria-hidden="true">↗</span></a>{% endif %}
+    </div>
+  </header>
+
+  <div class="site-shell">
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+    <aside class="site-sidebar" id="siteSidebar" aria-label="Primary navigation">
+      <nav class="side-nav" aria-label="Main">
+        <div class="side-group">
+          <div class="side-group-label">Getting started</div>
+          <a class="side-link" data-nav="home" href="{% url 'home' %}"><span class="side-icon" aria-hidden="true">⌂</span> Overview</a>
+          <a class="side-link" href="{% url 'home' %}#introduction"><span class="side-icon" aria-hidden="true">≡</span> Introduction</a>
+        </div>
+        <div class="side-group">
+          <div class="side-group-label">Projects</div>
+          <a class="side-link" data-nav="projects" href="{% url 'projects_list' %}"><span class="side-icon" aria-hidden="true">▤</span> All projects</a>
+          <a class="side-link" href="{% url 'home' %}#featured-projects"><span class="side-icon" aria-hidden="true">◇</span> Featured projects</a>
+        </div>
+        <div class="side-group">
+          <div class="side-group-label">Links</div>
+          {% if config and config.cv_file %}<a class="side-link" href="{% url 'cv_download' %}"><span class="side-icon" aria-hidden="true">▣</span> Resume</a>{% endif %}
+          {% if config and config.github_url %}<a class="side-link" href="{{ config.github_url }}" target="_blank" rel="noopener noreferrer"><span class="side-icon" aria-hidden="true">↗</span> GitHub</a>{% endif %}
+          {% if config and config.email %}<a class="side-link" href="mailto:{{ config.email }}"><span class="side-icon" aria-hidden="true">✉</span> Contact</a>{% endif %}
+        </div>
+      </nav>
+      <div class="sidebar-bottom"><a href="/admin/">Administration <span aria-hidden="true">↗</span></a></div>
+    </aside>
+
+    <main id="main-content" class="content-main" tabindex="-1">
+      <div class="content-inner">{% block content %}{% endblock %}</div>
+      <footer class="site-footer">
+        <span>© {{ config.full_name|default:"Portfolio" }}</span>
+        {% if config and config.github_url %}<a href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">GitHub ↗</a>{% endif %}
+      </footer>
+    </main>
+
+    <aside class="page-sidebar" aria-label="Page information">
+      <div class="page-tools" id="pageTools">
+        <div class="aside-heading">Quick links</div>
+        {% if config and config.github_url %}<a href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">View GitHub <span aria-hidden="true">↗</span></a>{% endif %}
+        {% if config and config.cv_file %}<a href="{% url 'cv_download' %}">Download resume <span aria-hidden="true">↗</span></a>{% endif %}
+        {% if config and config.email %}<a href="mailto:{{ config.email }}">Send email <span aria-hidden="true">↗</span></a>{% endif %}
+      </div>
+      <nav class="page-toc" aria-label="On this page" id="pageToc" hidden>
+        <div class="aside-heading">On this page</div>
+        <div class="toc-links" id="tocLinks"></div>
+      </nav>
+    </aside>
+  </div>
+  <script type="module" src="{% static 'core/dist/main.js' %}"></script>
+</body>
+</html>
