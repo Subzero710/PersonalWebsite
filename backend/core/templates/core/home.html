@@ -16,7 +16,7 @@
 {% if skills %}
 <section class="content-section" id="tech-stack" data-toc-section data-toc-title="Tech stack">
   <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} Tech stack</h2>
-  <p class="section-caption">Technologies I work with regularly:</p>
+  {% if config and config.tech_stack_intro %}<p class="section-caption">{{ config.tech_stack_intro }}</p>{% elif skills_from_tags %}<p class="section-caption">Technologies used in these projects:</p>{% else %}<p class="section-caption">Technologies I work with regularly:</p>{% endif %}
   <div class="tech-list">
     {% for item in skills %}
       <span class="tech-badge">{% include 'core/partials/skill_icon.html' with item=item %}<span>{{ item.name }}</span></span>
@@ -43,10 +43,5 @@
   <a class="btn btn-resume" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' %} View Resume {% include 'core/partials/icon.html' with name='arrow-right' %}</a>
 </section>
 {% endif %}
-{% if kpis %}
-<section class="content-section secondary-details" id="at-a-glance" data-toc-section data-toc-title="At a glance">
-  <h2 class="section-title">{% include 'core/partials/icon.html' with name='link' %} At a glance</h2>
-  <dl class="kpi-grid">{% for item in kpis %}<div class="kpi-item"><dt>{{ item.label }}</dt><dd>{{ item.value }}</dd></div>{% endfor %}</dl>
-</section>
-{% endif %}
+
 {% endblock %}
