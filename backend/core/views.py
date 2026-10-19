@@ -1,6 +1,6 @@
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink
+from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink, FocusItem, UpdateItem
 
 
 def _site_context():
@@ -51,8 +51,8 @@ def home(request):
     config = context['config']
     context.update({
         'featured': Project.objects.filter(is_featured=True).prefetch_related('tags').order_by('order', '-created_at')[:3],
-        'highlights': Highlight.objects.filter(site=config) if config else Highlight.objects.none(),
-        'kpis': KPI.objects.filter(site=config) if config else KPI.objects.none(),
+        'focus_items': FocusItem.objects.filter(site=config, is_visible=True)[:3] if config else [],
+        'recent_updates': UpdateItem.objects.filter(site=config, is_visible=True)[:4] if config else [],
     })
     return render(request, 'core/home.html', context)
 

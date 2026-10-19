@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
-from .models import SiteConfig, Project, Tag, Highlight, KPI, Skill, SocialLink
+from .models import SiteConfig, Project, Tag, Highlight, KPI, Skill, SocialLink, FocusItem, UpdateItem
 
 
 @admin.register(Tag)
@@ -51,13 +51,29 @@ class SocialLinkInline(admin.TabularInline):
     fields = ('platform', 'label', 'url', 'order', 'is_visible')
 
 
+class FocusItemInline(admin.TabularInline):
+    model = FocusItem
+    extra = 0
+    ordering = ('order', 'id')
+    fields = ('title', 'description', 'status', 'order', 'is_visible')
+    verbose_name_plural = 'Overview · Current focus (manual)'
+
+
+class UpdateItemInline(admin.StackedInline):
+    model = UpdateItem
+    extra = 0
+    ordering = ('-published_at', '-id')
+    fields = ('title', 'summary', 'published_at', 'url', 'is_visible')
+    verbose_name_plural = 'Overview · Recent updates (manual)'
+
+
 @admin.register(SiteConfig)
 class SiteConfigAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'headline', 'updated_at')
     fieldsets = (
         ('Identity', {'fields': ('full_name', 'headline', 'avatar')}),
-        ('Home page', {'fields': ('hero_title', 'intro', 'bio', 'resume_intro'),
+        ('Home page', {'fields': ('hero_title', 'overview_description', 'intro', 'bio', 'resume_intro'),
                        'description': 'Only configured text appears on the website. The biography accepts Markdown.'}),
         ('Links', {'fields': ('email', 'github_url', 'cv_file')}),
     )
-    inlines = (SkillInline, SocialLinkInline, HighlightInline, KPIInline)
+    inlines = (FocusItemInline, UpdateItemInline, SkillInline, SocialLinkInline, HighlightInline, KPIInline)

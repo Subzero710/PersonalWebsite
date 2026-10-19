@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
 
 # Icon values select visual assets, never project/skill content.
 ICON_CHOICES = [
@@ -40,6 +41,10 @@ class SiteConfig(models.Model):
     full_name = models.CharField(max_length=120)
     headline = models.CharField(max_length=200, blank=True)
     hero_title = models.CharField(max_length=180, blank=True)
+    overview_description = models.TextField(
+        blank=True,
+        help_text='A short introduction to this website, distinct from the personal biography.',
+    )
     intro = models.TextField(blank=True)
     bio = models.TextField(blank=True, help_text='Markdown supported.')
     resume_intro = models.TextField(blank=True)
@@ -152,3 +157,42 @@ class SocialLink(models.Model):
 
     def __str__(self):
         return self.display_name
+
+
+class FocusItem(models.Model):
+    """Manually curated work priorities for Overview (no external sync yet)."""
+
+    class Status(models.TextChoices):
+        IN_PROGRESS = 'in_progress', 'In progress'
+        PLANNED = 'planned', 'Planned'
+        PAUSED = 'paused', 'Paused'
+
+    site = models.ForeignKey(SiteConfig, related_name='focus_items', on_delete=models.CASCADE)
+    title = models.CharField(max_length=140)
+    description = models.CharField(max_length=260, blank=True)
+    status = models.CharField(max_length=16, choices=Status.choices, default=Status.IN_PROGRESS)
+    order = models.PositiveIntegerField(default=0)
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.title
+
+
+class UpdateItem(models.Model):
+    """Manually published updates; not inferred from GitHub commits."""
+
+    site = models.ForeignKey(SiteConfig, related_name='updates', on_delete=models.CASCADE)
+    title = models.CharField(max_length=160)
+    summary = models.CharField(max_length=280, blank=True)
+    published_at = models.DateTimeField(default=timezone.now)
+    url = models.URLField(blank=True, help_text='Optional link to more information.')
+    is_visible = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['-published_at', '-id']
+
+    def __str__(self):
+        return self.title
