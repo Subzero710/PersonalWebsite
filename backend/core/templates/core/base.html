@@ -2,63 +2,128 @@
 {% load static %}
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>{% block title %}{{ config.full_name|default:"Portfolio" }}{% endblock %}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090d12">
+  <title>{% block title %}{{ config.full_name|default:"Portfolio" }}{% endblock %} · {{ config.full_name|default:"Portfolio" }}</title>
   <link rel="stylesheet" href="{% static 'core/dist/site.css' %}">
+  <script>try{if(localStorage.getItem('portfolio-theme')==='light'){document.documentElement.dataset.theme='light'}}catch(e){}</script>
 </head>
 <body>
-  <div class="bg-grid"></div>
-
+  <a class="skip-link" href="#main-content">Skip to content</a>
   <header class="site-header">
-    <div class="container navbar">
-      <a class="brand" href="/">
+    <div class="header-brand">
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false" aria-controls="siteSidebar"><span></span><span></span><span></span></button>
+      <a class="brand" href="{% url 'home' %}">
         {% if config and config.avatar %}
-        <img
-          class="brand-avatar"
-          src="{{ config.avatar.url }}"
-          alt="{{ config.full_name|default:'Portfolio' }} avatar"
-          width="36"
-          height="36"
-          loading="lazy"
-        />
-      {% else %}
-        <span class="brand-badge" aria-hidden="true"></span>
-      {% endif %}
-        <span class="brand-text">{{ config.full_name|default:"Portfolio" }}</span>
-      </a>
-
-    <nav class="navlinks" aria-label="Navigation">
-      <a class="navlink" href="/">Home</a>
-      <a class="navlink" href="/projects/">Projects</a>
-      <a class="navlink" href="/cv/">Resume</a>
-      <a class="navlink" href="/admin/">Admin</a>
-    </nav>
-
-      <div class="navcta">
-        {% if config and config.cv_file %}
-          <a class="btn primary" href="/cv/">Download resume</a>
+        <img class="brand-avatar" src="{{ config.avatar.url }}" alt="" width="36" height="36" decoding="async">
         {% else %}
-          <a class="btn" href="/projects/">View projects</a>
+        <span class="brand-avatar-fallback" aria-hidden="true">{% include 'core/partials/icon.html' with name='user' %}</span>
         {% endif %}
-      </div>
+        <span class="brand-name">{{ config.full_name|default:"Portfolio" }}</span>
+      </a>
+    </div>
+    <form class="header-search" role="search" action="{% url 'projects_list' %}" method="get">
+      <label class="sr-only" for="globalSearch">Search projects and technologies</label>
+      <span class="search-icon">{% include 'core/partials/icon.html' with name='search' %}</span>
+      <input id="globalSearch" name="q" type="search" placeholder="Search projects, skills, or anything..." autocomplete="off">
+      <kbd class="search-shortcut" aria-hidden="true">Ctrl K</kbd>
+    </form>
+    <div class="header-actions">
+      {% if contact_links %}
+      <button class="btn btn-primary header-contact" type="button" id="connectTrigger" data-connect-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="connectPanel">
+        <span>Let's Connect</span>{% include 'core/partials/icon.html' with name='arrow-right' %}
+      </button>
+      {% endif %}
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" aria-pressed="false" title="Toggle color theme">
+        <span class="theme-icon-moon">{% include 'core/partials/icon.html' with name='moon' %}</span>
+        <span class="theme-icon-sun">{% include 'core/partials/icon.html' with name='sun' %}</span>
+      </button>
     </div>
   </header>
-
-  <main class="container">
-    {% block content %}{% endblock %}
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-row">
-      <div class="muted">
-        {% if config and config.github_url %}<a class="link" href="{{ config.github_url }}">GitHub</a>{% endif %}
-        {% if config and config.email %} — <a class="link" href="mailto:{{ config.email }}">{{ config.email }}</a>{% endif %}
+  {% if contact_links %}
+  <div class="connect-overlay" id="connectPanel" hidden>
+    <section class="connect-dialog" role="dialog" aria-modal="true" aria-labelledby="connectTitle" aria-describedby="connectDescription" tabindex="-1">
+      <div class="connect-dialog-heading">
+        <div>
+          <div class="connect-eyebrow">CONTACT</div>
+          <h2 id="connectTitle">Let's connect</h2>
+          <p id="connectDescription">Choose where you'd like to reach me.</p>
+        </div>
+        <button type="button" class="connect-close" id="connectClose" aria-label="Close contact window">×</button>
       </div>
-      <div class="muted">© {{ config.full_name|default:"Portfolio" }}</div>
-    </div>
-  </footer>
-
+      <div class="connect-options">
+        {% for link in contact_links %}
+        <a class="connect-option" href="{{ link.url }}" {% if link.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+          <span class="connect-option-icon">{% include 'core/partials/icon.html' with name=link.icon %}</span>
+          <span class="connect-option-name">{{ link.label }}</span>
+          {% include 'core/partials/icon.html' with name='external-link' icon_class='connect-option-arrow' %}
+        </a>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  {% endif %}
+  <div class="site-shell">
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+    <aside class="site-sidebar" id="siteSidebar" aria-label="Primary navigation">
+      <nav class="side-nav" aria-label="Main navigation">
+        <div class="side-group">
+          <div class="side-group-label">Getting Started</div>
+          <a class="side-link" data-nav="home" href="{% url 'home' %}">{% include 'core/partials/icon.html' with name='home' %}<span>Overview</span></a>
+          <a class="side-link" data-nav="about" href="{% url 'about' %}">{% include 'core/partials/icon.html' with name='user' %}<span>About</span></a>
+          <a class="side-link" data-nav="tech-stack" href="{% url 'tech_stack' %}">{% include 'core/partials/icon.html' with name='layers' %}<span>Tech Stack</span></a>
+        </div>
+        <div class="side-group">
+          <a class="side-group-label side-group-heading-link" data-nav="projects" href="{% url 'projects_list' %}">Projects</a>
+          {% for nav_project in nav_projects %}
+          <a class="side-link" data-project-slug="{{ nav_project.slug }}" href="{% url 'project_detail' nav_project.slug %}">
+            {% if nav_project.icon_key %}{% include 'core/partials/icon.html' with name=nav_project.icon_key %}{% else %}{% include 'core/partials/icon.html' with name='package' %}{% endif %}<span>{{ nav_project.title }}</span>
+          </a>
+          {% empty %}
+          <a class="side-link" data-nav="projects" href="{% url 'projects_list' %}">{% include 'core/partials/icon.html' with name='grid' %}<span>All projects</span></a>
+          {% endfor %}
+        </div>
+        {% if config and config.cv_file or config.github_url or resource_social_links %}
+        <div class="side-group">
+          <div class="side-group-label">Links</div>
+          {% if config.cv_file %}<a class="side-link" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' %}<span>Resume</span></a>{% endif %}
+          {% if config.github_url %}<a class="side-link" href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">{% include 'core/partials/icon.html' with name='github' %}<span>GitHub</span></a>{% endif %}
+          {% for social in resource_social_links %}
+          <a class="side-link" href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
+            {% include 'core/partials/icon.html' with name=social.platform %}<span>{{ social.display_name }}</span>
+          </a>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if contact_links %}
+        <div class="side-group connect-mobile-group">
+          <div class="side-group-label">Contact</div>
+          <button type="button" class="side-link connect-mobile-action" id="connectMobileTrigger" data-connect-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="connectPanel">{% include 'core/partials/icon.html' with name='mail' %}<span>Let's Connect</span></button>
+        </div>
+        {% endif %}
+      </nav>
+    </aside>
+    <main id="main-content" class="content-main" tabindex="-1">
+      <div class="content-inner">{% block content %}{% endblock %}</div>
+      <footer class="site-footer"><span>© {{ config.full_name|default:"Portfolio" }}</span></footer>
+    </main>
+    <aside class="page-sidebar" aria-label="Page information">
+      <section class="page-tools" aria-label="Portfolio tools">
+        <h2 class="aside-heading aside-heading-strong"><svg class="ui-icon" data-icon="command" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 9a2 2 0 1 1 2 -2v10a2 2 0 1 1 -2 -2h10a2 2 0 1 1 -2 2v-10a2 2 0 1 1 2 2h-10"/></svg><span>Portfolio tools</span></h2>
+        <button type="button" class="tool-card jobmatch-launch" id="jobMatchTrigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="jobMatchPanel">
+          {% include 'core/partials/icon.html' with name='scan-search' icon_class='tool-card-icon' %}
+          <span class="tool-card-copy"><strong>Job Matching</strong><small>See how my experience matches your role</small></span>
+          {% include 'core/partials/icon.html' with name='arrow-right' icon_class='tool-external' %}
+        </button>
+      </section>
+      <nav class="page-toc" aria-label="On this page" id="pageToc" hidden>
+        <h2 class="aside-heading aside-heading-strong">{% include 'core/partials/icon.html' with name='file' %}<span>On this page</span></h2>
+        <div class="toc-links" id="tocLinks"></div>
+      </nav>
+    </aside>
+  </div>
+  {% include 'core/partials/job_matching_modal.html' %}
   <script type="module" src="{% static 'core/dist/main.js' %}"></script>
 </body>
 </html>

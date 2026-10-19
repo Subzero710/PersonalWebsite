@@ -1,18 +1,17 @@
-export function setupCopyButtons() {
-  document.addEventListener("click", async (e) => {
-    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-copy]");
-    if (!btn) return;
 
-    const text = btn.getAttribute("data-copy") ?? "";
-    if (!text) return;
-
-    try {
-      await navigator.clipboard.writeText(text);
-      btn.textContent = "Copied ✓";
-      setTimeout(() => (btn.textContent = "Copy email"), 1200);
-    } catch {
-      // fallback
-      window.prompt("Copy:", text);
-    }
+export function setupCopyButtons(): void {
+  document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+    const original = button.textContent || "Copy email";
+    button.addEventListener("click", async () => {
+      const value = button.dataset.copy;
+      if (!value) return;
+      try {
+        await navigator.clipboard.writeText(value);
+        button.textContent = "Copied";
+      } catch {
+        button.textContent = "Copy failed";
+      }
+      window.setTimeout(() => { button.textContent = original; }, 1800);
+    });
   });
 }

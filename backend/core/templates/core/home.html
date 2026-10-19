@@ -1,60 +1,71 @@
-{% extends "core/base.html" %}
-{% block title %}Home{% endblock %}
+{% extends 'core/base.html' %}
+{% block title %}Overview{% endblock %}
 {% block content %}
+<div class="overview-page">
+  <header class="page-intro overview-intro" id="introduction" data-toc-section data-toc-title="Introduction">
+    <div class="eyebrow">Getting Started</div>
+    <h1>{% if config and config.hero_title %}{{ config.hero_title }}{% else %}Overview{% endif %}</h1>
+    {% if config and config.overview_description %}
+      <p class="page-lead">{{ config.overview_description|linebreaksbr }}</p>
+    {% endif %}
+  </header>
 
-<section class="hero">
-  <div class="reveal">
-    <h1 class="hero-title">
-      <span class="grad">{{ config.full_name|default:"Portfolio" }}</span>
-    </h1>
-    <p class="hero-sub">{{ config.headline|default:"Developer — projects, stack, contact." }}</p>
-
-    <div class="hero-actions">
-      <a class="btn primary" href="/projects/">View projects</a>
-      {% if config and config.github_url %}<a class="btn" href="{{ config.github_url }}">GitHub</a>{% endif %}
-      {% if config and config.email %}<button class="btn" data-copy="{{ config.email }}">Copy email</button>{% endif %}
+  {% if featured %}
+  <section class="content-section overview-section" id="featured-projects" data-toc-section data-toc-title="Featured projects">
+    <div class="section-heading overview-section-heading">
+      <h2 class="section-title">{% include 'core/partials/icon.html' with name='folder-open' %} Featured projects</h2>
+      <a class="overview-view-all" href="{% url 'projects_list' %}">View all projects {% include 'core/partials/icon.html' with name='arrow-right' %}</a>
     </div>
-
-    <div class="kpis">
-      {% for k in kpis %}
-        <div class="kpi">
-          <div class="n">{{ k.value }}</div>
-          <div class="l">{{ k.label }}</div>
-        </div>
-      {% endfor %}
+    <div class="projects-grid featured-grid">
+      {% for p in featured %}{% include 'core/partials/project_card.html' with project=p %}{% endfor %}
     </div>
-  </div>
+  </section>
+  {% endif %}
 
-    <div class="hero-card reveal">
-      <div class="hero-card-head">
-        <div>
-          <div class="hero-card-title">Highlights</div>
-        </div>
+  {% if focus_items or recent_updates %}
+  <div class="overview-activity-grid{% if not focus_items or not recent_updates %} overview-activity-grid--single{% endif %}">
+    {% if focus_items %}
+    <section class="overview-activity-card" id="current-focus" data-toc-section data-toc-title="Current focus">
+      <div class="overview-panel-heading">
+        <h2 class="section-title">{% include 'core/partials/icon.html' with name='target-arrow' %} Current focus</h2>
+        <p>What I'm working on and planning next.</p>
       </div>
-
-      <div class="highlight-list">
-        {% for h in highlights %}
-          <div class="highlight-item">{{ h.text }}</div>
-        {% empty %}
-          <div class="highlight-item muted">Add highlights in the admin panel.</div>
+      <ol class="overview-focus-list">
+        {% for item in focus_items %}
+        <li class="overview-focus-item">
+          <span class="overview-focus-dot overview-focus-dot--{{ item.status }}" aria-hidden="true"></span>
+          <div class="overview-focus-copy">
+            <h3>{{ item.title }}</h3>
+            {% if item.description %}<p>{{ item.description }}</p>{% endif %}
+          </div>
+          <span class="overview-focus-status overview-focus-status--{{ item.status }}">{{ item.get_status_display }}</span>
+        </li>
         {% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+
+    {% if recent_updates %}
+    <section class="overview-activity-card" id="recent-updates" data-toc-section data-toc-title="Recent updates">
+      <div class="overview-panel-heading">
+        <h2 class="section-title">{% include 'core/partials/icon.html' with name='git-branch' %} Recent updates</h2>
+        <p>Updates published on this portfolio.</p>
       </div>
-    </div>
-</section>
-
-<section class="section">
-  <div class="section-head">
-    <h2>Featured projects</h2>
-    <a class="link" href="/projects/">View all</a>
+      <ol class="overview-updates-list">
+        {% for item in recent_updates %}
+        <li class="overview-update-item">
+          <span class="overview-update-dot" aria-hidden="true"></span>
+          <div class="overview-update-copy">
+            <h3>{% if item.url %}<a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.title }} {% include 'core/partials/icon.html' with name='external-link' %}</a>{% else %}{{ item.title }}{% endif %}</h3>
+            {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+          </div>
+          <time datetime="{{ item.published_at|date:'c' }}">{{ item.published_at|date:'M j, Y' }}</time>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+    {% endif %}
   </div>
-
-  <div class="grid">
-    {% for p in featured %}
-      {% include "core/partials/project_card.html" with project=p %}
-    {% empty %}
-      <p class="muted reveal">No featured projects yet.</p>
-    {% endfor %}
-  </div>
-</section>
-
+  {% endif %}
+</div>
 {% endblock %}

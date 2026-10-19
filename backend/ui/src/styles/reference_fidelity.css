@@ -1,0 +1,19 @@
+/* Geometry measured on ref.png (1672x941). No business content here. */
+.page-intro { padding-bottom: 8px; }
+.content-section { padding-top: 16px; margin-bottom: 6px; }
+.section-title { margin-bottom: 8px; }
+.highlight-list li { line-height: 1.38; }
+#featured-projects { padding-top: 5px; }
+.featured-grid .card-summary { font-size: 11px; line-height: 1.42; }
+#tech-stack .section-title .ui-icon { color: var(--text-secondary); }
+@media (min-width: 1441px) {
+  .header-brand { padding-left: 58px; }
+  .header-search { transform: translateX(16px); }
+  .side-group { padding-left: 49px; }
+  .side-group-label { margin-left: 12px; }
+  .page-sidebar { padding-top: 30px; }
+  .featured-grid { width: calc(100% + 35px); gap: 15px; }
+}
+@media (min-width: 1191px) and (max-width: 1440px) {
+  .header-search { transform: translateX(3px); }
+}

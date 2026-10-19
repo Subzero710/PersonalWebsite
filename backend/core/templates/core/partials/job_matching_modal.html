@@ -1,0 +1,55 @@
+<div class="jobmatch-overlay" id="jobMatchPanel" hidden>
+  <section class="jobmatch-dialog" role="dialog" aria-modal="true" aria-labelledby="jobMatchTitle" aria-describedby="jobMatchIntro" tabindex="-1">
+    <div class="jobmatch-heading">
+      <div>
+        <div class="connect-eyebrow">PORTFOLIO TOOLS</div>
+        <div class="jobmatch-title-row">
+          {% include 'core/partials/icon.html' with name='scan-search' %}
+          <h2 id="jobMatchTitle">Job Matching</h2>
+        </div>
+        <p id="jobMatchIntro">Describe the role you're hiring for, and discover how my projects and experience align with your requirements.</p>
+      </div>
+      <button type="button" class="jobmatch-close" id="jobMatchClose" aria-label="Close Job Matching">×</button>
+    </div>
+    {% if job_matching_issues %}
+    <div class="jobmatch-setup-alert" role="alert">
+      {% include 'core/partials/icon.html' with name='triangle-alert' %}
+      <div>
+        <strong>Job Matching cannot generate reports yet:</strong>
+        <ul>{% for issue in job_matching_issues %}<li>{{ issue.message }}</li>{% endfor %}</ul>
+      </div>
+    </div>
+    {% endif %}
+    <form id="jobMatchForm" action="{% url 'job_matching_generate' %}" method="post" data-jobmatch-form>
+      {% csrf_token %}
+      <div class="jobmatch-fields">
+        <label for="jobMatchRole">Job title <span aria-hidden="true">*</span></label>
+        <input name="job_title" id="jobMatchRole" type="text" maxlength="140" minlength="2" required placeholder="e.g. Backend Software Engineer" autocomplete="off">
+        <label for="jobMatchCompany">Company <span class="jobmatch-optional">(optional)</span></label>
+        <input name="company" id="jobMatchCompany" type="text" maxlength="120" placeholder="e.g. Acme Technologies" autocomplete="organization">
+        <label for="jobMatchDescription">Job description / Requirements <span aria-hidden="true">*</span></label>
+        <div class="jobmatch-description-wrap">
+          <textarea name="job_description" id="jobMatchDescription" rows="8" minlength="40" maxlength="12000" required placeholder="Paste a full job posting or describe the responsibilities, required skills, experience and qualifications you're looking for..."></textarea>
+          <div class="jobmatch-description-hint" aria-hidden="true">
+            <span>Full job postings and brief descriptions accepted</span>
+            {% include 'core/partials/icon.html' with name='clipboard-paste' %}
+          </div>
+        </div>
+        <div class="jobmatch-counter"><span id="jobMatchCount">0</span> / 12,000 characters</div>
+      </div>
+      <div class="jobmatch-ai-explainer">
+        {% include 'core/partials/icon.html' with name='sparkles' %}
+        <p>AI extracts the requirements and matches them against real portfolio evidence.</p>
+      </div>
+      <div class="jobmatch-actions">
+        <button class="btn btn-primary jobmatch-submit" type="submit" id="jobMatchSubmit"{% if not job_matching_ready %} disabled title="Complete the Job Matching configuration listed above"{% endif %}>
+          {% include 'core/partials/icon.html' with name='file-search' %}
+          <span>Generate matching report</span>
+          {% include 'core/partials/icon.html' with name='arrow-right' %}
+        </button>
+        <span class="jobmatch-result" role="status" aria-live="polite" id="jobMatchStatus"></span>
+      </div>
+      <p class="jobmatch-privacy-text">Your job description is sent to an external AI provider for analysis (OpenAI). This website does not store the description or the generated PDF.</p>
+    </form>
+  </section>
+</div>

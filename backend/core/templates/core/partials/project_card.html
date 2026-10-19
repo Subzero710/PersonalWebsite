@@ -1,31 +1,5 @@
-<a class="card reveal"
-   href="{% url 'project_detail' project.slug %}"
-   data-title="{{ project.title|lower }}"
-   data-tags="{% for t in project.tags.all %}{{ t.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
-
-  <div class="card-head">
-    <div>
-      <h3 class="card-title">{{ project.title }}</h3>
-      {% if project.summary %}
-        <p class="card-summary">{{ project.summary }}</p>
-      {% endif %}
-    </div>
-    <div class="card-arrow" aria-hidden="true">→</div>
-  </div>
-
-  <div class="card-foot">
-    {% if project.tags.all %}
-      <div class="chips">
-        {% for t in project.tags.all %}
-          <span class="chip">{{ t.name }}</span>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <div class="pills">
-      {% if project.repo_url %}<span class="pill">repo</span>{% endif %}
-      {% if project.demo_url %}<span class="pill">demo</span>{% endif %}
-    </div>
-  </div>
-
+<a class="project-card" href="{% url 'project_detail' project.slug %}" data-title="{{ project.title|lower }}" data-summary="{{ project.summary|lower }}" data-tags="{% for t in project.tags.all %}{{ t.slug }}{% if not forloop.last %},{% endif %}{% endfor %}">
+  <div class="card-header"><span class="card-main-icon">{% if project.icon_key %}{% include 'core/partials/icon.html' with name=project.icon_key %}{% else %}{% include 'core/partials/icon.html' with name='package' %}{% endif %}</span><h3 class="card-title">{{ project.title }}</h3><span class="card-arrow">{% include 'core/partials/icon.html' with name='arrow-right' %}</span></div>
+  {% if project.summary %}<p class="card-summary">{{ project.summary }}</p>{% endif %}
+  {% if project.tags.all %}<div class="chips">{% for t in project.tags.all|slice:":3" %}<span class="chip">{% include 'core/partials/skill_icon.html' with item=t %}{{ t.name }}</span>{% endfor %}</div>{% endif %}
 </a>
