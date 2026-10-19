@@ -1,6 +1,7 @@
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink, FocusItem, UpdateItem
+from .job_matching_setup import setup_issues
 
 
 def _site_context():
@@ -49,7 +50,13 @@ def _site_context():
             else:
                 resource_social_links.append(social)
 
+    from django.conf import settings
+    job_matching_issues = setup_issues(config, getattr(settings, 'JOB_MATCH_OPENAI_API_KEY', ''))
+    job_matching_ready = not job_matching_issues
+
     return {'config': config, 'nav_projects': nav_projects,
+            'job_matching_ready': job_matching_ready,
+            'job_matching_issues': job_matching_issues,
             'skills': skills, 'skills_from_tags': skills_from_tags,
             'has_skills': bool(skills), 'contact_links': contact_links,
             'resource_social_links': resource_social_links}

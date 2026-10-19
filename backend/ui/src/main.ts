@@ -7,6 +7,7 @@ import { setupMobileNav } from "./ui/mobileNav";
 import { setupTableOfContents } from "./ui/toc";
 import { setupTheme } from "./ui/theme";
 import { setupContactPopover } from "./ui/contactPopover";
+import { setupJobMatching } from "./ui/jobMatching";
 
 setupActiveNav();
 setupProjectFilters();
@@ -17,3 +18,4 @@ setupTableOfContents();
 setupTheme();
 
 setupContactPopover();
+setupJobMatching();

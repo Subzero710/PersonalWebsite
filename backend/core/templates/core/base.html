@@ -109,20 +109,21 @@
       <footer class="site-footer"><span>© {{ config.full_name|default:"Portfolio" }}</span></footer>
     </main>
     <aside class="page-sidebar" aria-label="Page information">
-      {% if config and config.github_url or config.cv_file or config.email %}
       <section class="page-tools" aria-label="Portfolio tools">
-        <h2 class="aside-heading aside-heading-strong">{% include 'core/partials/icon.html' with name='package' %}<span>Portfolio tools</span></h2>
-        {% if config.github_url %}<a class="tool-card" href="{{ config.github_url }}" target="_blank" rel="noopener noreferrer">{% include 'core/partials/icon.html' with name='github' icon_class='tool-card-icon' %}<span class="tool-card-copy"><strong>View GitHub</strong><small>Check out my code</small></span>{% include 'core/partials/icon.html' with name='external-link' icon_class='tool-external' %}</a>{% endif %}
-        {% if config.cv_file %}<a class="tool-card" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' icon_class='tool-card-icon' %}<span class="tool-card-copy"><strong>Open resume</strong><small>View or download</small></span>{% include 'core/partials/icon.html' with name='external-link' icon_class='tool-external' %}</a>{% endif %}
-        {% if config.email %}<a class="tool-card" href="mailto:{{ config.email }}">{% include 'core/partials/icon.html' with name='mail' icon_class='tool-card-icon' %}<span class="tool-card-copy"><strong>Email me</strong><small>Let's build something</small></span>{% include 'core/partials/icon.html' with name='external-link' icon_class='tool-external' %}</a>{% endif %}
+        <h2 class="aside-heading aside-heading-strong">{% include 'core/partials/icon.html' with name='wrench' %}<span>Portfolio tools</span></h2>
+        <button type="button" class="tool-card jobmatch-launch" id="jobMatchTrigger" aria-haspopup="dialog" aria-expanded="false" aria-controls="jobMatchPanel">
+          {% include 'core/partials/icon.html' with name='scan-search' icon_class='tool-card-icon' %}
+          <span class="tool-card-copy"><strong>Job Matching</strong><small>See how my experience matches your role</small></span>
+          {% include 'core/partials/icon.html' with name='arrow-right' icon_class='tool-external' %}
+        </button>
       </section>
-      {% endif %}
       <nav class="page-toc" aria-label="On this page" id="pageToc" hidden>
         <h2 class="aside-heading aside-heading-strong">{% include 'core/partials/icon.html' with name='file' %}<span>On this page</span></h2>
         <div class="toc-links" id="tocLinks"></div>
       </nav>
     </aside>
   </div>
+  {% include 'core/partials/job_matching_modal.html' %}
   <script type="module" src="{% static 'core/dist/main.js' %}"></script>
 </body>
 </html>

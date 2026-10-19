@@ -131,6 +131,8 @@ SKILL_ICON_CHOICES = [
 
 class SiteConfig(models.Model):
     full_name = models.CharField(max_length=120)
+    first_name = models.CharField(max_length=80, blank=True, help_text="Used for Job Matching PDF filename: last_first_role.pdf.")
+    last_name = models.CharField(max_length=80, blank=True, help_text="Used for Job Matching PDF filename: last_first_role.pdf.")
     headline = models.CharField(max_length=200, blank=True)
     hero_title = models.CharField(max_length=180, blank=True)
     overview_description = models.TextField(
@@ -288,3 +290,15 @@ class UpdateItem(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class JobMatchUsage(models.Model):
+    """Short-lived, pseudonymous per-hour rate limit records; no job text stored."""
+
+    visitor_hash = models.CharField(max_length=64)
+    hour_bucket = models.DateTimeField()
+    count = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['visitor_hash', 'hour_bucket'], name='job_match_usage_per_hour')]

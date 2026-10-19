@@ -102,7 +102,8 @@ class UpdateItemInline(admin.StackedInline):
 class SiteConfigAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'headline', 'updated_at')
     fieldsets = (
-        ('Identity', {'fields': ('full_name', 'headline', 'avatar')}),
+        ('Identity', {'fields': ('full_name', 'first_name', 'last_name', 'headline', 'avatar'),
+                      'description': 'First and last name are used in Job Matching PDF filenames. Keep the displayed full_name unchanged.'}),
         ('Home page', {'fields': ('hero_title', 'overview_description', 'intro', 'bio', 'resume_intro'),
                        'description': 'Only configured text appears on the website. The biography accepts Markdown.'}),
         ('Links', {'fields': ('email', 'github_url', 'cv_file')}),

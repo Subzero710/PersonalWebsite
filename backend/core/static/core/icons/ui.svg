@@ -462,4 +462,30 @@
   <path d="M15 6v3h3l3 -3h-3v-3l-3 3"/>
   <path d="M15 9l-3 3"/>
 </symbol>
+<symbol id="scan-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M3 7V5a2 2 0 0 1 2-2h2" />
+  <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+  <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+  <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+  <circle cx="12" cy="12" r="3" />
+  <path d="m16 16-1.9-1.9" />
+</symbol>
+<symbol id="file-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <circle cx="11.5" cy="14.5" r="2.5" />
+  <path d="M13.3 16.3 15 18" />
+</symbol>
+<symbol id="clipboard-paste" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M11 14h10" />
+  <path d="M16 4h2a2 2 0 0 1 2 2v1.344" />
+  <path d="m17 18 4-4-4-4" />
+  <path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 1.793-1.113" />
+  <rect x="8" y="2" width="8" height="4" rx="1" />
+</symbol>
+<symbol id="triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+  <path d="M12 9v4" />
+  <path d="M12 17h.01" />
+</symbol>
 </svg>

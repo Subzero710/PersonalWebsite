@@ -78,3 +78,6 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# Optional, server-side only: Job Matching never exposes this key to the browser.
+JOB_MATCH_OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '').strip()
+JOB_MATCH_OPENAI_MODEL = os.environ.get('JOB_MATCH_OPENAI_MODEL', 'gpt-4.1-mini').strip()
