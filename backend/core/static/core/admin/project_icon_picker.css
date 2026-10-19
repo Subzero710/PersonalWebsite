@@ -1,0 +1,15 @@
+/* Project admin only. Does not affect the public portfolio. */
+.project-icon-picker { max-width: 900px; margin: 0 0 18px; }
+.project-icon-picker-caption { margin: 0 0 12px; color: var(--body-quiet-color, #777); }
+.project-icon-picker-search { display:block; width:min(100%,400px); margin:0 0 18px; padding:9px 12px; }
+.project-icon-picker-group { margin:0 0 18px; }
+.project-icon-picker-heading { font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.06em; margin:0 0 8px; color:var(--body-quiet-color,#777); }
+.project-icon-picker-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:8px; }
+.project-icon-picker-choice { display:flex; flex-direction:column; justify-content:center; align-items:center; gap:7px; min-height:77px; padding:8px; border:1px solid var(--border-color,#999); background:var(--body-bg,#fff); color:var(--body-fg,#111); border-radius:6px; cursor:pointer; line-height:1.3; text-align:center; }
+.project-icon-picker-choice svg { display:block; flex:none; width:23px; height:23px; color:currentColor; }
+.project-icon-picker-choice span { overflow-wrap:anywhere; font-size:11px; }
+.project-icon-picker-choice:hover { border-color:var(--primary,#79aec8); }
+.project-icon-picker-choice.is-selected { border:2px solid var(--primary,#417690); background:var(--selected-bg,#e4e4ef); font-weight:700; }
+.project-icon-picker-choice:focus-visible { outline:2px solid var(--primary,#417690); outline-offset:2px; }
+.project-icon-picker-choice[hidden], .project-icon-picker-group[hidden] { display:none !important; }
+@media (max-width: 480px) { .project-icon-picker-grid { grid-template-columns:repeat(3,minmax(0,1fr)); } }

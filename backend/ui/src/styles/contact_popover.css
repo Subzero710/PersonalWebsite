@@ -68,8 +68,9 @@ body.connect-open { overflow:hidden; }
   background:var(--accent-soft); color:var(--accent-primary); border-left-color:var(--accent-primary);
 }
 .side-link[href*="#"].is-active .ui-icon { color:var(--accent-primary); }
-.connect-mobile-action { display:none; }
+.connect-mobile-action, .connect-mobile-group { display:none; }
 @media (max-width:820px) {
+  .connect-mobile-group { display:block; }
   .connect-mobile-action { display:flex; width:100%; text-align:left; border:0; border-left:3px solid transparent; background:transparent; }
   .connect-dialog { min-height:0; width:min(680px,100%); }
 }

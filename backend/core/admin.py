@@ -1,3 +1,6 @@
+from django import forms
+from django.templatetags.static import static
+from django.utils.html import format_html
 from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
@@ -11,9 +14,22 @@ class TagAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+class ProjectIconPickerForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = '__all__'
+        widgets = {
+            'icon_key': forms.Select(attrs={
+                'data-project-icon-picker': '1',
+                'data-icon-sprite': static('core/icons/ui.svg'),
+            }),
+        }
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'icon_key', 'is_featured', 'order', 'updated_at')
+    form = ProjectIconPickerForm
+    list_display = ('title', 'icon_preview', 'icon_key', 'is_featured', 'order', 'updated_at')
     list_editable = ('is_featured', 'order')
     list_filter = ('is_featured', 'tags')
     search_fields = ('title', 'summary', 'description')
@@ -21,8 +37,23 @@ class ProjectAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('tags',)
     formfield_overrides = {
-        models.TextField: {'widget': Textarea(attrs={'rows': 18, 'style': 'font-family: ui-monospace, monospace;'})}
+        models.TextField: {'widget': Textarea(attrs={
+            'rows': 18, 'style': 'font-family: ui-monospace, monospace;'
+        })}
     }
+
+    @admin.display(description='Icon')
+    def icon_preview(self, obj):
+        return format_html(
+            '<svg aria-hidden="true" width="21" height="21" '
+            'style="color:var(--body-fg);vertical-align:middle">'
+            '<use href="{}#{}"></use></svg>',
+            static('core/icons/ui.svg'), obj.icon_key or 'package',
+        )
+
+    class Media:
+        css = {'all': ('core/admin/project_icon_picker.css',)}
+        js = ('core/admin/project_icon_picker.js',)
 
 
 class HighlightInline(admin.TabularInline):

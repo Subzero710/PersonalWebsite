@@ -78,26 +78,28 @@
           <a class="side-group-label side-group-heading-link" data-nav="projects" href="{% url 'projects_list' %}">Projects</a>
           {% for nav_project in nav_projects %}
           <a class="side-link" data-project-slug="{{ nav_project.slug }}" href="{% url 'project_detail' nav_project.slug %}">
-            {% if nav_project.icon_key %}{% include 'core/partials/icon.html' with name=nav_project.icon_key %}{% else %}{% include 'core/partials/icon.html' with name='code' %}{% endif %}<span>{{ nav_project.title }}</span>
+            {% if nav_project.icon_key %}{% include 'core/partials/icon.html' with name=nav_project.icon_key %}{% else %}{% include 'core/partials/icon.html' with name='package' %}{% endif %}<span>{{ nav_project.title }}</span>
           </a>
           {% empty %}
           <a class="side-link" data-nav="projects" href="{% url 'projects_list' %}">{% include 'core/partials/icon.html' with name='grid' %}<span>All projects</span></a>
           {% endfor %}
         </div>
-        {% if config and config.cv_file or config.github_url or config.email or extra_social_links %}
+        {% if config and config.cv_file or config.github_url or resource_social_links %}
         <div class="side-group">
           <div class="side-group-label">Links</div>
           {% if config.cv_file %}<a class="side-link" href="{% url 'cv_download' %}">{% include 'core/partials/icon.html' with name='file' %}<span>Resume</span></a>{% endif %}
           {% if config.github_url %}<a class="side-link" href="{{ config.github_url }}" rel="noopener noreferrer" target="_blank">{% include 'core/partials/icon.html' with name='github' %}<span>GitHub</span></a>{% endif %}
-          {% if config.email %}<a class="side-link" href="mailto:{{ config.email }}">{% include 'core/partials/icon.html' with name='mail' %}<span>Contact</span></a>{% endif %}
-          {% for social in extra_social_links %}
+          {% for social in resource_social_links %}
           <a class="side-link" href="{{ social.url }}" target="_blank" rel="noopener noreferrer">
             {% include 'core/partials/icon.html' with name=social.platform %}<span>{{ social.display_name }}</span>
           </a>
           {% endfor %}
-          {% if contact_links %}
+        </div>
+        {% endif %}
+        {% if contact_links %}
+        <div class="side-group connect-mobile-group">
+          <div class="side-group-label">Contact</div>
           <button type="button" class="side-link connect-mobile-action" id="connectMobileTrigger" data-connect-trigger aria-haspopup="dialog" aria-expanded="false" aria-controls="connectPanel">{% include 'core/partials/icon.html' with name='mail' %}<span>Let's Connect</span></button>
-          {% endif %}
         </div>
         {% endif %}
       </nav>

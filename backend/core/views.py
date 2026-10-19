@@ -18,32 +18,41 @@ def _site_context():
                       .annotate(project_count=Count('projects', distinct=True))
                       .order_by('-project_count', 'name').distinct()[:7])
         skills_from_tags = bool(skills)
-    # Reuse configured email/GitHub and expose every visible SocialLink.
-    # De-duplicate identical destinations without adding placeholder accounts.
+    # Contact channels are shown in Let's Connect; resource links stay in Links.
     contact_links = []
-    extra_social_links = []
+    resource_social_links = []
     seen_urls = set()
+    contact_platforms = {'linkedin', 'x', 'bluesky', 'mastodon',
+                         'discord', 'instagram', 'reddit'}
 
-    def append_contact(label, url, icon, external=True):
-        url = (url or '').strip()
-        if not url or url.casefold() in seen_urls:
-            return False
-        seen_urls.add(url.casefold())
-        contact_links.append({'label': label, 'url': url, 'icon': icon, 'external': external})
-        return True
+    def unique_url(url):
+        return (url or '').strip().rstrip('/').casefold()
 
     if config:
-        append_contact('GitHub', config.github_url, 'github')
+        # A code repository is a resource, not a contact destination.
+        if config.github_url:
+            seen_urls.add(unique_url(config.github_url))
         if config.email:
-            append_contact('Email', f'mailto:{config.email}', 'mail', False)
+            email_url = f'mailto:{config.email}'
+            contact_links.append({'label': 'Email', 'url': email_url,
+                                  'icon': 'mail', 'external': False})
+            seen_urls.add(unique_url(email_url))
+
         for social in SocialLink.objects.filter(site=config, is_visible=True).order_by('order', 'id'):
-            if append_contact(social.display_name, social.url, social.platform):
-                extra_social_links.append(social)
+            key = unique_url(social.url)
+            if not key or key in seen_urls:
+                continue
+            seen_urls.add(key)
+            if social.platform in contact_platforms:
+                contact_links.append({'label': social.display_name, 'url': social.url,
+                                      'icon': social.platform, 'external': True})
+            else:
+                resource_social_links.append(social)
 
     return {'config': config, 'nav_projects': nav_projects,
             'skills': skills, 'skills_from_tags': skills_from_tags,
             'has_skills': bool(skills), 'contact_links': contact_links,
-            'extra_social_links': extra_social_links}
+            'resource_social_links': resource_social_links}
 
 
 def home(request):
