@@ -8,7 +8,7 @@
 .intro-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:20px; }
 .content-section { padding-top:18px; margin-bottom:12px; scroll-margin-top:calc(var(--header-height) + 17px); }
 .section-title { display:flex; align-items:center; gap:13px; margin:0 0 10px; }
-.section-title .ui-icon { width:17px; height:17px; color:var(--accent-primary); stroke-width:2; }
+.section-title .ui-icon { width:21px; height:21px; color:var(--accent-primary); stroke-width:2; }
 .section-caption { font-size:14px; margin:0 0 9px; line-height:1.55; }
 .bio-content.prose { font-size:14px; line-height:1.42; }
 .bio-content.prose p { margin-bottom:12px; }
@@ -37,3 +37,10 @@
 .back-link { border-top:1px solid var(--border-subtle); margin-top:30px; padding:20px 0; }.back-link a { color:var(--text-secondary); }.back-link a:hover { color:var(--accent-primary); }
 .btn-resume { color:var(--accent-primary); background:var(--bg-secondary); border-color:var(--accent-primary) !important; font-weight:700; }.btn-resume:hover { background:var(--accent-soft); }
 .inline-copy { border:1px solid var(--border-default); border-radius:var(--radius-sm); background:var(--bg-secondary); color:var(--text-secondary); padding:4px 9px; }
+/* These fine-line glyphs occupy less visual space than geometric icons. */
+.section-title .ui-icon[data-icon="target-arrow"],
+.card-main-icon .ui-icon[data-icon="git-pull-request"],
+.side-link .ui-icon[data-icon="git-pull-request"] {
+  transform: scale(1.1);
+  transform-origin: center;
+}
