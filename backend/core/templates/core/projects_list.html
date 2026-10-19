@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 {% block title %}Projects{% endblock %}
 {% block content %}
-<header class="page-intro" id="projects-intro" data-toc-section data-toc-title="Projects"><div class="eyebrow"><span class="eyebrow-line"></span> Projects</div><h1>Projects</h1><p class="page-lead">Browse projects and filter by name or technology.</p></header>
+<header class="page-intro" id="projects-intro" data-toc-section data-toc-title="Projects"><div class="eyebrow">Projects</div><h1>Projects</h1><p class="page-lead">Browse projects and filter by name or technology.</p></header>
 <section class="content-section" id="project-directory" data-toc-section data-toc-title="Project directory">
   <div class="section-heading"><h2 class="section-title">{% include 'core/partials/icon.html' with name='grid' %} Project directory</h2><span id="projectCount" class="result-count" role="status" aria-live="polite">{{ projects|length }} projects</span></div>
   <div class="filters">

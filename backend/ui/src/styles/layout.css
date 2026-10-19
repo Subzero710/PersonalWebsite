@@ -3,7 +3,7 @@
 .content-inner { width:100%; max-width:var(--content-width); margin:0; min-height:calc(100vh - 130px); }
 .page-intro { padding:0 0 14px; border-bottom:1px solid var(--border-subtle); }
 .eyebrow { display:flex; align-items:center; gap:10px; text-transform:uppercase; font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.055em; color:var(--accent-primary); margin-bottom:11px; }
-.eyebrow a { color:var(--accent-primary); } .eyebrow-line { width:13px; height:2px; flex:0 0 auto; background:var(--accent-primary); }
+.eyebrow a { color:var(--accent-primary); }
 .page-lead { max-width:720px; font-size:16px; line-height:1.46; margin:0; color:var(--text-secondary); white-space:normal; }
 .intro-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:20px; }
 .content-section { padding-top:18px; margin-bottom:12px; scroll-margin-top:calc(var(--header-height) + 17px); }

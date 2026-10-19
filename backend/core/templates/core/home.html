@@ -3,7 +3,7 @@
 {% block content %}
 <div class="overview-page">
   <header class="page-intro overview-intro" id="introduction" data-toc-section data-toc-title="Introduction">
-    <div class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> Getting Started</div>
+    <div class="eyebrow">Getting Started</div>
     <h1>{% if config and config.hero_title %}{{ config.hero_title }}{% else %}Overview{% endif %}</h1>
     {% if config and config.overview_description %}
       <p class="page-lead">{{ config.overview_description|linebreaksbr }}</p>

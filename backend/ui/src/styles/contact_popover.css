@@ -32,7 +32,6 @@ body.connect-open { overflow:hidden; }
   color:var(--accent-primary); text-transform:uppercase; letter-spacing:.09em;
   font:700 12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;
 }
-.connect-eyebrow .eyebrow-line { width:18px; height:2px; }
 .connect-dialog h2 { font-size:clamp(32px,3.7vw,48px); font-weight:760; line-height:1.12; margin:0 0 14px; }
 .connect-dialog-heading p { max-width:58ch; margin:0; font-size:16px; line-height:1.55; }
 .connect-close {
