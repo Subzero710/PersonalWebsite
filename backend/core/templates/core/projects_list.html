@@ -7,7 +7,15 @@
   <div class="filters">
     <label class="sr-only" for="projectSearch">Search project name or tag</label>
     <input class="input" id="projectSearch" type="search" placeholder="Search projects or tags..." autocomplete="off">
-    <div class="tagbar" id="tagBar" role="group" aria-label="Filter by technology"><button type="button" class="tagpill is-active" data-tag="all" aria-pressed="true">All</button>{% for t in tags %}<button type="button" class="tagpill" data-tag="{{ t.slug }}" aria-pressed="false">{{ t.name }}</button>{% endfor %}</div>
+    <div class="tagbar" id="tagBar" role="group" aria-label="Filter by technology">
+      <button type="button" class="tagpill is-active" data-tag="all" aria-pressed="true">All</button>
+      {% for t in tags %}
+      <button type="button" class="tagpill" data-tag="{{ t.slug }}" data-tag-name="{{ t.name }}" data-count="{{ t.project_count }}" aria-pressed="false" {% if forloop.counter > 7 %}hidden{% endif %}>
+        {% include 'core/partials/skill_icon.html' with item=t %}<span>{{ t.name }}</span>
+      </button>
+      {% endfor %}
+    </div>
+    {% if tags|length > 7 %}<button type="button" id="moreProjectTags" class="filter-more" aria-controls="tagBar" aria-expanded="false">More filters</button>{% endif %}
   </div>
   <div class="projects-grid" id="projectsGrid">{% for p in projects %}{% include 'core/partials/project_card.html' with project=p %}{% endfor %}</div>
   <div class="empty-state" id="noProjectMatches" hidden>No projects match your filters. <button type="button" id="resetProjectFilters" class="text-button">Clear filters</button></div>

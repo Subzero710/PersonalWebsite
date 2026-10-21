@@ -160,7 +160,8 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)[:80]
+            special_slugs = {'c++': 'cplusplus', 'c#': 'csharp'}
+            self.slug = special_slugs.get(self.name.strip().casefold(), slugify(self.name))[:80]
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -11,7 +11,9 @@ from .models import SiteConfig, Project, Tag, Highlight, KPI, Skill, SocialLink,
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'icon_key')
     search_fields = ('name',)
-    prepopulated_fields = {'slug': ('name',)}
+    # Let Tag.save() generate safe slugs for C, C++ and C#; Django's JS
+    # prepopulation collapses all three to 'c'.
+    prepopulated_fields = {}
 
 
 class ProjectIconPickerForm(forms.ModelForm):

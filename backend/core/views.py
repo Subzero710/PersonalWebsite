@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
 from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink, FocusItem, UpdateItem
@@ -88,7 +89,9 @@ def projects_list(request):
     context = _site_context()
     context.update({
         'projects': Project.objects.prefetch_related('tags').all(),
-        'tags': Tag.objects.filter(projects__isnull=False).distinct().order_by('name'),
+        'tags': (Tag.objects.filter(projects__isnull=False)
+                 .annotate(project_count=Count('projects', distinct=True))
+                 .order_by('-project_count', 'name')),
     })
     return render(request, 'core/projects_list.html', context)
 
