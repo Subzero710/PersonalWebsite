@@ -119,7 +119,7 @@ SOCIAL_PLATFORM_CHOICES = [
     ('devto', 'DEV Community'), ('medium', 'Medium'), ('twitch', 'Twitch'),
     ('website', 'Personal website'), ('globe', 'Other website'),
 ]
-SKILL_ICON_CHOICES = [
+TECH_ICON_CHOICES = [
     ('', 'Use uploaded icon / text only'),
     ('python', 'Python'), ('go', 'Go'), ('typescript', 'TypeScript'),
     ('docker', 'Docker'), ('terraform', 'Terraform'), ('aws', 'AWS'),
@@ -131,8 +131,8 @@ SKILL_ICON_CHOICES = [
 
 class SiteConfig(models.Model):
     full_name = models.CharField(max_length=120)
-    first_name = models.CharField(max_length=80, blank=True, help_text="Used for Job Matching PDF filename: last_first_role.pdf.")
-    last_name = models.CharField(max_length=80, blank=True, help_text="Used for Job Matching PDF filename: last_first_role.pdf.")
+    first_name = models.CharField(max_length=80, blank=True)
+    last_name = models.CharField(max_length=80, blank=True)
     headline = models.CharField(max_length=200, blank=True)
     hero_title = models.CharField(max_length=180, blank=True)
     overview_description = models.TextField(
@@ -163,45 +163,10 @@ class SiteConfig(models.Model):
         return self.full_name
 
 
-class OverviewSettings(SiteConfig):
-    class Meta:
-        proxy = True
-        verbose_name = 'Overview'
-        verbose_name_plural = 'Overview'
-
-
-class AboutSettings(SiteConfig):
-    class Meta:
-        proxy = True
-        verbose_name = 'About'
-        verbose_name_plural = 'About'
-
-
-class TechStackSettings(SiteConfig):
-    class Meta:
-        proxy = True
-        verbose_name = 'Tech Stack'
-        verbose_name_plural = 'Tech Stack'
-
-
-class ContactSettings(SiteConfig):
-    class Meta:
-        proxy = True
-        verbose_name = 'Contact & Links'
-        verbose_name_plural = 'Contact & Links'
-
-
-class IdentitySettings(SiteConfig):
-    class Meta:
-        proxy = True
-        verbose_name = 'Identity & Job Matching'
-        verbose_name_plural = 'Identity & Job Matching'
-
-
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=80, unique=True, blank=True)
-    icon_key = models.CharField(max_length=24, blank=True, choices=SKILL_ICON_CHOICES)
+    icon_key = models.CharField(max_length=24, blank=True, choices=TECH_ICON_CHOICES)
     icon_image = models.ImageField(upload_to='tag-icons/', blank=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -240,18 +205,6 @@ class Project(models.Model):
         return self.title
 
 
-class Highlight(models.Model):
-    site = models.ForeignKey('SiteConfig', related_name='highlights', on_delete=models.CASCADE)
-    text = models.CharField(max_length=200)
-    order = models.PositiveIntegerField(default=0)
-
-    class Meta:
-        ordering = ['order', 'id']
-
-    def __str__(self):
-        return self.text
-
-
 class KPI(models.Model):
     site = models.ForeignKey('SiteConfig', related_name='kpis', on_delete=models.CASCADE)
     value = models.CharField(max_length=32)
@@ -265,26 +218,10 @@ class KPI(models.Model):
         return f'{self.value} — {self.label}'
 
 
-class Skill(models.Model):
-    site = models.ForeignKey('SiteConfig', related_name='skills', on_delete=models.CASCADE)
-    name = models.CharField(max_length=80)
-    icon_key = models.CharField(max_length=24, blank=True, choices=SKILL_ICON_CHOICES)
-    icon_image = models.ImageField(upload_to='skill-icons/', blank=True, null=True)
-    order = models.PositiveIntegerField(default=0)
-    is_visible = models.BooleanField(default=True)
-
-    class Meta:
-        ordering = ['order', 'id']
-
-    def __str__(self):
-        return self.name
-
-
 class SocialLink(models.Model):
     """User-configured public contact destinations, attached to SiteConfig."""
     site = models.ForeignKey(SiteConfig, related_name='social_links', on_delete=models.CASCADE)
     platform = models.CharField(max_length=24, choices=SOCIAL_PLATFORM_CHOICES)
-    placement = models.CharField(max_length=12, choices=[('connect', "Let's Connect"), ('links', 'Links')], default='links')
     label = models.CharField(max_length=80, blank=True, help_text='Optional display name.')
     url = models.URLField(max_length=500)
     order = models.PositiveIntegerField(default=0)

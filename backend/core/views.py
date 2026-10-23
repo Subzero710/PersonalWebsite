@@ -1,15 +1,33 @@
 from django.db.models import Count
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, render
-from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink, FocusItem, UpdateItem
+from .models import SiteConfig, Project, KPI, Tag, SocialLink, FocusItem, UpdateItem
 from .job_matching_setup import setup_issues
 
 
+_NON_TECH_TAG_NAMES = {
+    'ai', 'cnn', 'networking', 'distributed', 'distributed systems',
+    'cybersecurity', 'security research', 'ci/cd', 'gitlab ci/cd',
+    'reinforcement learning', 'automated testing', 'web scraping',
+    'git', 'github', 'gitlab',
+}
+
+_TECH_NAME_ALIASES = {'springboot': 'spring boot'}
+
+
 def _technology_wall(config):
-    # The Tech Stack is fully admin-managed: project tags never appear automatically.
-    if config is None:
-        return []
-    return Skill.objects.filter(site=config, is_visible=True).order_by('order', 'name', 'id')
+    """Restore project-linked Tags as the only Tech Stack data source."""
+    # Restore the exact pre-patch Tag source: technologies attached to projects.
+    technologies = Tag.objects.filter(projects__isnull=False).distinct()
+    unique = {}
+    for tag in technologies:
+        name = tag.name.strip()
+        folded = name.casefold()
+        if not folded or folded in _NON_TECH_TAG_NAMES:
+            continue
+        key = _TECH_NAME_ALIASES.get(folded, folded)
+        unique.setdefault(key, tag)
+    return sorted(unique.values(), key=lambda tag: tag.name.casefold())
 
 
 def _site_context():
@@ -17,34 +35,29 @@ def _site_context():
     nav_projects = list(Project.objects.filter(is_featured=True).only('title', 'slug', 'icon_key')
                         .order_by('order', '-created_at')[:3])
 
-    # Explicit administrator-managed skills only, without tag inference.
-    skills = list(Skill.objects.filter(site=config, is_visible=True)) if config else []
-    skills_from_tags = False
-    # Contact channels are shown in Let's Connect; resource links stay in Links.
+    # All social links are contact destinations. Links contains the main
+    # GitHub destination and the CV, configured separately in SiteConfig.
     contact_links = []
     resource_social_links = []
-    seen_urls = set()
-
-    def unique_url(url):
-        return (url or '').strip().rstrip('/').casefold()
-
+    seen_social_urls = set()
     if config:
         if config.email:
-            email_url = f'mailto:{config.email}'
-            contact_links.append({'label': 'Email', 'url': email_url,
+            contact_links.append({'label': 'Email',
+                                  'url': f'mailto:{config.email}',
                                   'icon': 'mail', 'external': False})
-            seen_urls.add(unique_url(email_url))
-
-        for social in SocialLink.objects.filter(site=config, is_visible=True).order_by('order', 'id'):
-            key = unique_url(social.url)
-            if not key or key in seen_urls:
+        for social in SocialLink.objects.filter(
+            site=config, is_visible=True
+        ).order_by('order', 'id'):
+            normalized = social.url.strip().rstrip('/').casefold()
+            if not normalized or normalized in seen_social_urls:
                 continue
-            seen_urls.add(key)
-            if social.placement == 'connect':
-                contact_links.append({'label': social.display_name, 'url': social.url,
-                                      'icon': social.platform, 'external': True})
-            else:
-                resource_social_links.append(social)
+            seen_social_urls.add(normalized)
+            contact_links.append({
+                'label': social.display_name,
+                'url': social.url,
+                'icon': social.platform,
+                'external': True,
+            })
 
     from django.conf import settings
     job_matching_issues = setup_issues(config, getattr(settings, 'JOB_MATCH_OPENAI_API_KEY', ''))
@@ -53,8 +66,7 @@ def _site_context():
     return {'config': config, 'nav_projects': nav_projects,
             'job_matching_ready': job_matching_ready,
             'job_matching_issues': job_matching_issues,
-            'skills': skills, 'skills_from_tags': skills_from_tags,
-            'has_skills': bool(skills), 'contact_links': contact_links,
+            'contact_links': contact_links,
             'resource_social_links': resource_social_links}
 
 
@@ -72,8 +84,6 @@ def home(request):
 
 def about(request):
     context = _site_context()
-    config = context['config']
-    context['highlights'] = Highlight.objects.filter(site=config) if config else Highlight.objects.none()
     return render(request, 'core/about.html', context)
 
 

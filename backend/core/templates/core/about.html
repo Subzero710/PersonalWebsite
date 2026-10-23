@@ -13,10 +13,4 @@
   <div class="bio-content prose">{{ config.bio|markdown_safe }}</div>
 </section>
 {% endif %}
-{% if highlights %}
-<section class="content-section" id="highlights" data-toc-section data-toc-title="Highlights">
-  <h2 class="section-title">{% include 'core/partials/icon.html' with name='sparkles' %} Highlights</h2>
-  <ul class="highlight-list">{% for item in highlights %}<li>{{ item.text }}</li>{% endfor %}</ul>
-</section>
-{% endif %}
 {% endblock %}

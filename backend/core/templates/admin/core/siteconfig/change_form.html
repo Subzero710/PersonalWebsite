@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:core_siteconfig_changelist' %}">{{ original|default:"New profile" }}</a>
+  &rsaquo;
+  <a href="{% url 'admin:app_list' app_label='core' %}">Core</a>
+  &rsaquo; Site settings
+</div>
+{% endblock %}

@@ -6,16 +6,15 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 from .models import (
-    SiteConfig, OverviewSettings, AboutSettings, TechStackSettings,
-    ContactSettings, IdentitySettings, Project, Tag, Highlight, KPI,
-    Skill, SocialLink, FocusItem, UpdateItem, SKILL_ICON_CHOICES,
+    SiteConfig, Project, Tag, KPI, SocialLink,
+    FocusItem, UpdateItem, TECH_ICON_CHOICES,
 )
 
 
-# Only change the Admin forms, not Tag/Skill model field definitions.
+# Only change the Admin forms, not Tag model field definitions.
 # Updating the model's `choices` would generate an AlterField migration.
-_BUNDLED_SKILL_ICONS = Path(__file__).resolve().parent / 'static' / 'core' / 'icons' / 'skills'
-_SKILL_ICON_LABELS = {
+_BUNDLED_TECH_ICONS = Path(__file__).resolve().parent / 'static' / 'core' / 'icons' / 'skills'
+_TECH_ICON_LABELS = {
     'c': 'C', 'cplusplus': 'C++', 'csharp': 'C#', 'cmake': 'CMake',
     'css3': 'CSS3', 'fastapi': 'FastAPI', 'flask': 'Flask',
     'github': 'GitHub', 'gitlab': 'GitLab', 'grafana': 'Grafana',
@@ -33,13 +32,13 @@ _SKILL_ICON_LABELS = {
 }
 
 
-def _admin_skill_icon_choices():
+def _admin_technology_icon_choices():
     """Present every shipped technology SVG without modifying model choices."""
-    labels = dict(SKILL_ICON_CHOICES[1:])
-    for path in _BUNDLED_SKILL_ICONS.glob('*.svg'):
+    labels = dict(TECH_ICON_CHOICES[1:])
+    for path in _BUNDLED_TECH_ICONS.glob('*.svg'):
         key = path.stem
-        if len(key) <= 24:  # Tag.icon_key and Skill.icon_key max_length
-            labels[key] = _SKILL_ICON_LABELS.get(key, labels.get(key, key.replace('-', ' ').title()))
+        if len(key) <= 24:  # Tag.icon_key max_length
+            labels[key] = _TECH_ICON_LABELS.get(key, labels.get(key, key.replace('-', ' ').title()))
     return [('', 'Automatic by name / uploaded icon'), *sorted(labels.items(), key=lambda row: row[1].casefold())]
 
 
@@ -48,7 +47,7 @@ class TechnologyIconAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        choices = _admin_skill_icon_choices()
+        choices = _admin_technology_icon_choices()
         current = getattr(self.instance, 'icon_key', '')
         if current and current not in {value for value, _ in choices}:
             choices.append((current, f'{current} (previously selected)'))
@@ -69,12 +68,6 @@ class TechnologyIconAdminForm(forms.ModelForm):
 class TagTechnologyIconForm(TechnologyIconAdminForm):
     class Meta:
         model = Tag
-        fields = '__all__'
-
-
-class SkillTechnologyIconForm(TechnologyIconAdminForm):
-    class Meta:
-        model = Skill
         fields = '__all__'
 
 
@@ -130,35 +123,19 @@ class ProjectAdmin(admin.ModelAdmin):
         js = ('core/admin/project_icon_picker.js',)
 
 
-class HighlightInline(admin.TabularInline):
-    model = Highlight
-    verbose_name_plural = 'About · Highlights (achievements, not technologies)'
-    extra = 0
-    ordering = ('order',)
-
-
 class KPIInline(admin.TabularInline):
     model = KPI
-    verbose_name_plural = 'Overview · KPIs'
     extra = 0
-    ordering = ('order',)
-
-
-class SkillInline(admin.TabularInline):
-    verbose_name_plural = 'Tech Stack · Technologies'
-    form = SkillTechnologyIconForm
-    model = Skill
-    extra = 0
-    ordering = ('order',)
-    fields = ('name', 'icon_key', 'icon_image', 'order', 'is_visible')
+    ordering = ('order', 'id')
+    verbose_name_plural = 'Overview · Key metrics'
 
 
 class SocialLinkInline(admin.TabularInline):
     model = SocialLink
-    verbose_name_plural = 'Contact & Links · Social links'
     extra = 0
-    ordering = ('order',)
-    fields = ('platform', 'label', 'url', 'placement', 'order', 'is_visible')
+    ordering = ('order', 'id')
+    fields = ('platform', 'label', 'url', 'order', 'is_visible')
+    verbose_name_plural = "Contact & Links · Let's Connect"
 
 
 class FocusItemInline(admin.TabularInline):
@@ -166,7 +143,7 @@ class FocusItemInline(admin.TabularInline):
     extra = 0
     ordering = ('order', 'id')
     fields = ('title', 'description', 'status', 'order', 'is_visible')
-    verbose_name_plural = 'Overview · Current focus (manual)'
+    verbose_name_plural = 'Overview · Current focus'
 
 
 class UpdateItemInline(admin.StackedInline):
@@ -174,68 +151,43 @@ class UpdateItemInline(admin.StackedInline):
     extra = 0
     ordering = ('-published_at', '-id')
     fields = ('title', 'summary', 'published_at', 'url', 'is_visible')
-    verbose_name_plural = 'Overview · Recent updates (manual)'
+    verbose_name_plural = 'Overview · Recent updates'
 
 
-class PageSettingsAdmin(admin.ModelAdmin):
-    """Each admin page edits the same underlying SiteConfig row."""
-    list_display = ('display_name', 'updated_at')
-    list_per_page = 25
+@admin.register(SiteConfig)
+class SiteConfigAdmin(admin.ModelAdmin):
+    """Edit one person's website by page rather than by separate proxy model."""
+
+    list_display = ('full_name', 'updated_at')
+    search_fields = ('full_name', 'first_name', 'last_name')
+    readonly_fields = ('display_full_name', 'manage_technologies')
+    change_form_template = 'admin/core/siteconfig/change_form.html'
+    fieldsets = (
+        ('Overview', {'fields': ('hero_title', 'overview_description')}),
+        ('About', {'fields': ('headline', 'bio'),
+                   'description': 'The biography accepts Markdown.'}),
+        ('Tech Stack', {'fields': ('tech_stack_intro', 'manage_technologies'),
+                        'description': 'The Tech Stack displays existing technologies from '
+                                       'project Tags (existing database records).'}),
+        ('Contact & Links', {'fields': ('email', 'github_url', 'cv_file'),
+                             'description': "Social Links below always appear in Let's Connect. "
+                                            'The main GitHub URL and CV appear under Links.'}),
+        ('Identity', {'fields': ('first_name', 'last_name', 'display_full_name', 'avatar')}),
+    )
+    inlines = (FocusItemInline, UpdateItemInline, KPIInline, SocialLinkInline)
 
     def has_add_permission(self, request):
-        # Only Identity can create the shared configuration; never create duplicates.
-        return self.model is IdentitySettings and not SiteConfig.objects.exists()
-
-    @admin.display(description='Profile')
-    def display_name(self, obj):
-        return obj.full_name
-
-
-@admin.register(OverviewSettings)
-class OverviewSettingsAdmin(PageSettingsAdmin):
-    fieldsets = (
-        ('Overview · Introduction', {'fields': ('hero_title', 'overview_description')}),
-    )
-    inlines = (FocusItemInline, UpdateItemInline, KPIInline)
-
-
-@admin.register(AboutSettings)
-class AboutSettingsAdmin(PageSettingsAdmin):
-    fieldsets = (
-        ('About · Profile', {'fields': ('headline', 'bio'),
-                             'description': 'The biography accepts Markdown.'}),
-    )
-    inlines = (HighlightInline,)
-
-
-@admin.register(TechStackSettings)
-class TechStackSettingsAdmin(PageSettingsAdmin):
-    fieldsets = (
-        ('Tech Stack · Introduction', {'fields': ('tech_stack_intro',)}),
-    )
-    inlines = (SkillInline,)
-
-
-@admin.register(ContactSettings)
-class ContactSettingsAdmin(PageSettingsAdmin):
-    fieldsets = (
-        ('Contact & Links · Destinations', {'fields': ('email', 'github_url', 'cv_file'),
-          'description': "Each social link explicitly chooses Let's Connect or Links."}),
-    )
-    inlines = (SocialLinkInline,)
-
-
-@admin.register(IdentitySettings)
-class IdentitySettingsAdmin(PageSettingsAdmin):
-    readonly_fields = ('display_full_name',)
-    fieldsets = (
-        ('Identity · Site-wide', {'fields': ('first_name', 'last_name', 'display_full_name', 'avatar'),
-          'description': 'Full name is computed from First name and Last name. '
-                         'These names are also used by Job Matching PDF filenames.'}),
-    )
+        return super().has_add_permission(request) and not SiteConfig.objects.exists()
 
     @admin.display(description='Full name (automatic)')
     def display_full_name(self, obj):
-        if not obj.pk:
-            return 'Calculated upon saving'
-        return obj.full_name
+        return obj.full_name if obj and obj.pk else 'Calculated when saving'
+
+    @admin.display(description='Technologies')
+    def manage_technologies(self, obj):
+        from django.urls import reverse
+        url = reverse('admin:core_tag_changelist')
+        return format_html('<a href="{}">Manage project Tags and technology icons</a>', url)
+
+    class Media:
+        js = ('core/admin/site_config_sections.js',)

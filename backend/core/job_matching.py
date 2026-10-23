@@ -42,11 +42,11 @@ def _extract_cv(config):
         return ''
 
 
-def build_evidence(config, projects, skills, highlights, request):
+def build_evidence(config, projects, request):
     """Return sources with stable IDs. Empty fields never become inferred claims."""
     sources = {}
     def add(key, kind, label, text, url=''):
-        limits = {'project': 1450, 'profile': 3000, 'cv': 6500, 'skill': 120, 'highlight': 400}
+        limits = {'project': 1450, 'profile': 3000, 'cv': 6500}
         clean = collapse(text, limits.get(kind, 900))
         if clean:
             sources[key] = {'id': key, 'kind': kind, 'label': label, 'text': clean, 'url': url}
@@ -70,10 +70,6 @@ def build_evidence(config, projects, skills, highlights, request):
                 'tags': [t.name for t in tags], 'url': page_url,
                 'repo_url': p.repo_url, 'demo_url': p.demo_url,
             }
-    for s in skills[:40]:
-        add(f'skill:{s.pk}', 'skill', f'Skill: {s.name}', s.name)
-    for idx, h in enumerate(highlights[:12], 1):
-        add(f'highlight:{idx}', 'highlight', f'Highlight {idx}', h.text)
     # Fixed global budget: a large portfolio should not create unbounded API cost.
     budget, limited = 36000, {}
     for key, item in sources.items():

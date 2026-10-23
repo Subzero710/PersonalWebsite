@@ -18,7 +18,7 @@ from django.views.decorators.http import require_POST
 
 from .job_matching import MatchingFailed, MatchingUnavailable, build_evidence, call_model
 from .job_matching_pdf import build_pdf, filename_for
-from .models import Highlight, JobMatchUsage, Project, SiteConfig, Skill
+from .models import JobMatchUsage, Project, SiteConfig
 from .job_matching_setup import setup_issues
 
 
@@ -85,9 +85,7 @@ def job_matching_generate(request):
     values = form.cleaned_data
     try:
         projects = list(Project.objects.all().prefetch_related('tags').order_by('order', '-created_at')[:24])
-        skills = list(Skill.objects.filter(site=config, is_visible=True).order_by('order', 'id')[:40])
-        highlights = list(Highlight.objects.filter(site=config).order_by('order', 'id')[:12])
-        sources = build_evidence(config, projects, skills, highlights, request)
+        sources = build_evidence(config, projects, request)
         report = call_model(
             values['job_title'], values['company'], values['job_description'], sources,
             api_key=api_key, model=model)
