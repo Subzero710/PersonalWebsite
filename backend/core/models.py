@@ -114,7 +114,7 @@ ICON_CHOICES = [
 SOCIAL_PLATFORM_CHOICES = [
     ('github', 'GitHub'), ('linkedin', 'LinkedIn'), ('gitlab', 'GitLab'),
     ('x', 'X / Twitter'), ('bluesky', 'Bluesky'), ('mastodon', 'Mastodon'),
-    ('discord', 'Discord'), ('youtube', 'YouTube'), ('instagram', 'Instagram'),
+    ('discord', 'Discord'), ('telegram', 'Telegram'), ('youtube', 'YouTube'), ('instagram', 'Instagram'),
     ('reddit', 'Reddit'), ('stackoverflow', 'Stack Overflow'),
     ('devto', 'DEV Community'), ('medium', 'Medium'), ('twitch', 'Twitch'),
     ('website', 'Personal website'), ('globe', 'Other website'),
