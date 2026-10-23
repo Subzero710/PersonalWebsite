@@ -5,3 +5,16 @@ https://creativecommons.org/licenses/by/4.0/
 Original vectors have been wrapped in local SVG files and assigned display colors.
 Other icons in this directory are custom SVG assets.
 Brand names and trademarks remain the property of their respective owners.
+
+Additional portfolio technology marks:
+- Kubernetes: official CNCF artwork from https://github.com/cncf/artwork
+  (projects/kubernetes/icon/color/kubernetes-icon-color.svg).
+- Amazon S3: AWS architecture artwork.
+- QEMU: QEMU brand mark used for the KVM/QEMU tag.
+- MCP: Model Context Protocol mark.
+- WebSocket: WebSocket logo.
+- Kotlin: Kotlin logo geometry.
+- LZ4: portfolio-specific SVG treatment for the LZ4 tag.
+
+These visual assets do not create, rename, or reclassify portfolio tags.
+

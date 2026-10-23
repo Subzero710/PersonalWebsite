@@ -44,3 +44,15 @@
   transform: scale(1.1);
   transform-origin: center;
 }
+
+/* Tech Stack is a logo wall, separate from project topic/classification tags. */
+.tech-wall { gap:10px; }
+.tech-wall .tech-badge-icon {
+  width:52px;
+  height:52px;
+  min-height:52px;
+  padding:9px;
+  justify-content:center;
+}
+.tech-wall .tech-badge-icon .tech-icon { width:32px; height:32px; }
+

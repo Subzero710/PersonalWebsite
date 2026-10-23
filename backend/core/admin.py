@@ -27,6 +27,8 @@ _SKILL_ICON_LABELS = {
     'spring': 'Spring Boot', 'sqlite': 'SQLite',
     'tensorflow': 'TensorFlow', 'unity': 'Unity', 'vercel': 'Vercel',
     'vitejs': 'Vite',
+    'kotlin': 'Kotlin', 'kvmqemu': 'KVM/QEMU', 'lz4': 'LZ4',
+    'mcp': 'MCP', 's3': 'Amazon S3', 'websocket': 'WebSocket',
 }
 
 

@@ -5,6 +5,48 @@ from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink,
 from .job_matching_setup import setup_issues
 
 
+_NON_TECH_TAG_NAMES = {
+    'ai',
+    'cnn',
+    'networking',
+    'distributed',
+    'distributed systems',
+    'cybersecurity',
+    'security research',
+    'ci/cd',
+    'gitlab ci/cd',
+    'reinforcement learning',
+    'automated testing',
+    'web scraping',
+    'git',
+    'github',
+    'gitlab',
+}
+
+_TECH_NAME_ALIASES = {
+    'springboot': 'spring boot',
+}
+
+
+def _technology_wall(config):
+    """Full technology wall, separate from project-topic/classification tags."""
+    items = []
+    if config:
+        items.extend(Skill.objects.filter(site=config, is_visible=True))
+    items.extend(Tag.objects.filter(projects__isnull=False).distinct())
+
+    unique = {}
+    for item in items:
+        name = (item.name or '').strip()
+        folded = name.casefold()
+        if not folded or folded in _NON_TECH_TAG_NAMES:
+            continue
+        canonical = _TECH_NAME_ALIASES.get(folded, folded)
+        unique.setdefault(canonical, item)
+
+    return sorted(unique.values(), key=lambda item: item.name.casefold())
+
+
 def _site_context():
     config = SiteConfig.objects.order_by('-updated_at').first()
     nav_projects = list(Project.objects.filter(is_featured=True).only('title', 'slug', 'icon_key')
@@ -82,7 +124,9 @@ def about(request):
 
 
 def tech_stack(request):
-    return render(request, 'core/tech_stack.html', _site_context())
+    context = _site_context()
+    context['technologies'] = _technology_wall(context['config'])
+    return render(request, 'core/tech_stack.html', context)
 
 
 def projects_list(request):

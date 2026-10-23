@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+{% block title %}Tech stack{% endblock %}
+{% block content %}
+<header class="page-intro" id="introduction">
+  <div class="eyebrow">Expertise</div>
+  <h1>Tech stack</h1>
+  {% if config and config.tech_stack_intro %}<p class="page-lead">{{ config.tech_stack_intro }}</p>{% endif %}
+</header>
+{% if skills %}
+<section class="content-section" id="technologies" data-toc-section data-toc-title="Technologies">
+  <h2 class="section-title">{% include 'core/partials/icon.html' with name='layers' %} Technologies</h2>
+  <div class="tech-list">
+    {% for item in skills %}
+    <span class="tech-badge">{% include 'core/partials/skill_icon.html' with item=item %}<span>{{ item.name }}</span></span>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}
