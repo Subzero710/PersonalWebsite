@@ -45,14 +45,14 @@
   transform-origin: center;
 }
 
-/* Tech Stack is a logo wall, separate from project topic/classification tags. */
+/* Tech Stack is a logo + technology-name wall, separate from project topic/classification tags. */
 .tech-wall { gap:10px; }
 .tech-wall .tech-badge-icon {
-  width:52px;
-  height:52px;
-  min-height:52px;
-  padding:9px;
-  justify-content:center;
+  min-height:48px;
+  padding:8px 12px;
+  justify-content:flex-start;
+  gap:9px;
 }
-.tech-wall .tech-badge-icon .tech-icon { width:32px; height:32px; }
+.tech-wall .tech-badge-icon .tech-icon { width:28px; height:28px; }
+.tech-wall .tech-name { white-space:nowrap; }
 

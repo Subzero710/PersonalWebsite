@@ -1,7 +1,0 @@
-Selected brand icon vectors (Python, Go, Docker, AWS, Linux, Git, React, Node.js, JavaScript)
-come from Font Awesome Free Brands by Fonticons, Inc. (https://fontawesome.com/).
-These brand SVGs are licensed under CC BY 4.0:
-https://creativecommons.org/licenses/by/4.0/
-Original vectors have been wrapped in local SVG files and assigned display colors.
-Other icons in this directory are custom SVG assets.
-Brand names and trademarks remain the property of their respective owners.
