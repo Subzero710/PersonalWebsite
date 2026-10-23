@@ -139,6 +139,7 @@ class SiteConfig(models.Model):
         blank=True,
         help_text='A short introduction to this website, distinct from the personal biography.',
     )
+    tech_stack_intro = models.TextField(blank=True)
     intro = models.TextField(blank=True)
     bio = models.TextField(blank=True, help_text='Markdown supported.')
     resume_intro = models.TextField(blank=True)
@@ -148,8 +149,53 @@ class SiteConfig(models.Model):
     avatar = models.ImageField(upload_to='avatar/', blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        # A single editable source of truth: first_name + last_name.
+        # Preserve legacy display names until both fields are provided.
+        first, last = (self.first_name or '').strip(), (self.last_name or '').strip()
+        if first and last:
+            self.full_name = f'{first} {last}'
+            if kwargs.get('update_fields') is not None:
+                kwargs['update_fields'] = set(kwargs['update_fields']) | {'full_name'}
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.full_name
+
+
+class OverviewSettings(SiteConfig):
+    class Meta:
+        proxy = True
+        verbose_name = 'Overview'
+        verbose_name_plural = 'Overview'
+
+
+class AboutSettings(SiteConfig):
+    class Meta:
+        proxy = True
+        verbose_name = 'About'
+        verbose_name_plural = 'About'
+
+
+class TechStackSettings(SiteConfig):
+    class Meta:
+        proxy = True
+        verbose_name = 'Tech Stack'
+        verbose_name_plural = 'Tech Stack'
+
+
+class ContactSettings(SiteConfig):
+    class Meta:
+        proxy = True
+        verbose_name = 'Contact & Links'
+        verbose_name_plural = 'Contact & Links'
+
+
+class IdentitySettings(SiteConfig):
+    class Meta:
+        proxy = True
+        verbose_name = 'Identity & Job Matching'
+        verbose_name_plural = 'Identity & Job Matching'
 
 
 class Tag(models.Model):
@@ -238,6 +284,7 @@ class SocialLink(models.Model):
     """User-configured public contact destinations, attached to SiteConfig."""
     site = models.ForeignKey(SiteConfig, related_name='social_links', on_delete=models.CASCADE)
     platform = models.CharField(max_length=24, choices=SOCIAL_PLATFORM_CHOICES)
+    placement = models.CharField(max_length=12, choices=[('connect', "Let's Connect"), ('links', 'Links')], default='links')
     label = models.CharField(max_length=80, blank=True, help_text='Optional display name.')
     url = models.URLField(max_length=500)
     order = models.PositiveIntegerField(default=0)

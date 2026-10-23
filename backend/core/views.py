@@ -5,46 +5,11 @@ from .models import SiteConfig, Project, Highlight, KPI, Skill, Tag, SocialLink,
 from .job_matching_setup import setup_issues
 
 
-_NON_TECH_TAG_NAMES = {
-    'ai',
-    'cnn',
-    'networking',
-    'distributed',
-    'distributed systems',
-    'cybersecurity',
-    'security research',
-    'ci/cd',
-    'gitlab ci/cd',
-    'reinforcement learning',
-    'automated testing',
-    'web scraping',
-    'git',
-    'github',
-    'gitlab',
-}
-
-_TECH_NAME_ALIASES = {
-    'springboot': 'spring boot',
-}
-
-
 def _technology_wall(config):
-    """Full technology wall, separate from project-topic/classification tags."""
-    items = []
-    if config:
-        items.extend(Skill.objects.filter(site=config, is_visible=True))
-    items.extend(Tag.objects.filter(projects__isnull=False).distinct())
-
-    unique = {}
-    for item in items:
-        name = (item.name or '').strip()
-        folded = name.casefold()
-        if not folded or folded in _NON_TECH_TAG_NAMES:
-            continue
-        canonical = _TECH_NAME_ALIASES.get(folded, folded)
-        unique.setdefault(canonical, item)
-
-    return sorted(unique.values(), key=lambda item: item.name.casefold())
+    # The Tech Stack is fully admin-managed: project tags never appear automatically.
+    if config is None:
+        return []
+    return Skill.objects.filter(site=config, is_visible=True).order_by('order', 'name', 'id')
 
 
 def _site_context():
@@ -52,30 +17,18 @@ def _site_context():
     nav_projects = list(Project.objects.filter(is_featured=True).only('title', 'slug', 'icon_key')
                         .order_by('order', '-created_at')[:3])
 
-    # Explicit skills always win. On a migrated older site, show real project
-    # technologies instead of inventing skills or leaving an empty section.
+    # Explicit administrator-managed skills only, without tag inference.
     skills = list(Skill.objects.filter(site=config, is_visible=True)) if config else []
     skills_from_tags = False
-    if not skills:
-        from django.db.models import Count
-        skills = list(Tag.objects.filter(projects__isnull=False)
-                      .annotate(project_count=Count('projects', distinct=True))
-                      .order_by('-project_count', 'name').distinct()[:7])
-        skills_from_tags = bool(skills)
     # Contact channels are shown in Let's Connect; resource links stay in Links.
     contact_links = []
     resource_social_links = []
     seen_urls = set()
-    contact_platforms = {'linkedin', 'x', 'bluesky', 'mastodon',
-                         'discord', 'instagram', 'reddit'}
 
     def unique_url(url):
         return (url or '').strip().rstrip('/').casefold()
 
     if config:
-        # A code repository is a resource, not a contact destination.
-        if config.github_url:
-            seen_urls.add(unique_url(config.github_url))
         if config.email:
             email_url = f'mailto:{config.email}'
             contact_links.append({'label': 'Email', 'url': email_url,
@@ -87,7 +40,7 @@ def _site_context():
             if not key or key in seen_urls:
                 continue
             seen_urls.add(key)
-            if social.platform in contact_platforms:
+            if social.placement == 'connect':
                 contact_links.append({'label': social.display_name, 'url': social.url,
                                       'icon': social.platform, 'external': True})
             else:
@@ -112,6 +65,7 @@ def home(request):
         'featured': Project.objects.filter(is_featured=True).prefetch_related('tags').order_by('order', '-created_at')[:3],
         'focus_items': FocusItem.objects.filter(site=config, is_visible=True)[:3] if config else [],
         'recent_updates': UpdateItem.objects.filter(site=config, is_visible=True)[:4] if config else [],
+        'kpis': KPI.objects.filter(site=config).order_by('order', 'id') if config else [],
     })
     return render(request, 'core/home.html', context)
 

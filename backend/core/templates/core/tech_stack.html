@@ -14,14 +14,12 @@
 
   <div class="tech-list tech-wall" aria-label="Technology stack">
     {% for item in technologies %}
-      {% with logo=item|skill_icon_src %}
-        {% if logo %}
-        <span class="tech-badge tech-wall-item" title="{{ item.name }}">
-          {% include 'core/partials/skill_icon.html' with item=item %}
-          <span class="tech-wall-name">{{ item.name }}</span>
-        </span>
-        {% endif %}
-      {% endwith %}
+      <span class="tech-badge tech-wall-item" title="{{ item.name }}">
+        {% with logo=item|skill_icon_src %}
+          {% if logo %}{% include 'core/partials/skill_icon.html' with item=item %}{% endif %}
+        {% endwith %}
+        <span class="tech-wall-name">{{ item.name }}</span>
+      </span>
     {% endfor %}
   </div>
 </section>

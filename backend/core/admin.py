@@ -6,8 +6,9 @@ from django.contrib import admin
 from django.db import models
 from django.forms import Textarea
 from .models import (
-    SiteConfig, Project, Tag, Highlight, KPI, Skill, SocialLink,
-    FocusItem, UpdateItem, SKILL_ICON_CHOICES,
+    SiteConfig, OverviewSettings, AboutSettings, TechStackSettings,
+    ContactSettings, IdentitySettings, Project, Tag, Highlight, KPI,
+    Skill, SocialLink, FocusItem, UpdateItem, SKILL_ICON_CHOICES,
 )
 
 
@@ -131,17 +132,20 @@ class ProjectAdmin(admin.ModelAdmin):
 
 class HighlightInline(admin.TabularInline):
     model = Highlight
+    verbose_name_plural = 'About · Highlights (achievements, not technologies)'
     extra = 0
     ordering = ('order',)
 
 
 class KPIInline(admin.TabularInline):
     model = KPI
+    verbose_name_plural = 'Overview · KPIs'
     extra = 0
     ordering = ('order',)
 
 
 class SkillInline(admin.TabularInline):
+    verbose_name_plural = 'Tech Stack · Technologies'
     form = SkillTechnologyIconForm
     model = Skill
     extra = 0
@@ -151,9 +155,10 @@ class SkillInline(admin.TabularInline):
 
 class SocialLinkInline(admin.TabularInline):
     model = SocialLink
+    verbose_name_plural = 'Contact & Links · Social links'
     extra = 0
     ordering = ('order',)
-    fields = ('platform', 'label', 'url', 'order', 'is_visible')
+    fields = ('platform', 'label', 'url', 'placement', 'order', 'is_visible')
 
 
 class FocusItemInline(admin.TabularInline):
@@ -172,14 +177,65 @@ class UpdateItemInline(admin.StackedInline):
     verbose_name_plural = 'Overview · Recent updates (manual)'
 
 
-@admin.register(SiteConfig)
-class SiteConfigAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'headline', 'updated_at')
+class PageSettingsAdmin(admin.ModelAdmin):
+    """Each admin page edits the same underlying SiteConfig row."""
+    list_display = ('display_name', 'updated_at')
+    list_per_page = 25
+
+    def has_add_permission(self, request):
+        # Only Identity can create the shared configuration; never create duplicates.
+        return self.model is IdentitySettings and not SiteConfig.objects.exists()
+
+    @admin.display(description='Profile')
+    def display_name(self, obj):
+        return obj.full_name
+
+
+@admin.register(OverviewSettings)
+class OverviewSettingsAdmin(PageSettingsAdmin):
     fieldsets = (
-        ('Identity', {'fields': ('full_name', 'first_name', 'last_name', 'headline', 'avatar'),
-                      'description': 'First and last name are used in Job Matching PDF filenames. Keep the displayed full_name unchanged.'}),
-        ('Home page', {'fields': ('hero_title', 'overview_description', 'intro', 'bio', 'resume_intro'),
-                       'description': 'Only configured text appears on the website. The biography accepts Markdown.'}),
-        ('Links', {'fields': ('email', 'github_url', 'cv_file')}),
+        ('Overview · Introduction', {'fields': ('hero_title', 'overview_description')}),
     )
-    inlines = (FocusItemInline, UpdateItemInline, SkillInline, SocialLinkInline, HighlightInline, KPIInline)
+    inlines = (FocusItemInline, UpdateItemInline, KPIInline)
+
+
+@admin.register(AboutSettings)
+class AboutSettingsAdmin(PageSettingsAdmin):
+    fieldsets = (
+        ('About · Profile', {'fields': ('headline', 'bio'),
+                             'description': 'The biography accepts Markdown.'}),
+    )
+    inlines = (HighlightInline,)
+
+
+@admin.register(TechStackSettings)
+class TechStackSettingsAdmin(PageSettingsAdmin):
+    fieldsets = (
+        ('Tech Stack · Introduction', {'fields': ('tech_stack_intro',)}),
+    )
+    inlines = (SkillInline,)
+
+
+@admin.register(ContactSettings)
+class ContactSettingsAdmin(PageSettingsAdmin):
+    fieldsets = (
+        ('Contact & Links · Destinations', {'fields': ('email', 'github_url', 'cv_file'),
+          'description': "Each social link explicitly chooses Let's Connect or Links."}),
+    )
+    inlines = (SocialLinkInline,)
+
+
+@admin.register(IdentitySettings)
+class IdentitySettingsAdmin(PageSettingsAdmin):
+    readonly_fields = ('display_full_name',)
+    fieldsets = (
+        ('Identity · Site-wide', {'fields': ('first_name', 'last_name', 'display_full_name', 'avatar'),
+          'description': 'Full name is computed from First name and Last name. '
+                         'These names are also used by Job Matching PDF filenames.'}),
+    )
+
+    @admin.display(description='Full name (automatic)')
+    def display_full_name(self, obj):
+        if not obj.pk:
+            return 'Calculated upon saving'
+        return obj.full_name

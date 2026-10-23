@@ -39,7 +39,7 @@
       </div>
       <div class="jobmatch-ai-explainer">
         {% include 'core/partials/icon.html' with name='sparkles' %}
-        <p>AI extracts the requirements and matches them against real portfolio evidence.</p>
+        <p>AI extracts job requirements; your portfolio is matched locally on this server.</p>
       </div>
       <div class="jobmatch-actions">
         <button class="btn btn-primary jobmatch-submit" type="submit" id="jobMatchSubmit"{% if not job_matching_ready %} disabled title="Complete the Job Matching configuration listed above"{% endif %}>
@@ -49,7 +49,7 @@
         </button>
         <span class="jobmatch-result" role="status" aria-live="polite" id="jobMatchStatus"></span>
       </div>
-      <p class="jobmatch-privacy-text">Your job description is sent to an external AI provider for analysis (OpenAI). This website does not store the description or the generated PDF.</p>
+      <p class="jobmatch-privacy-text">Your job title, company, and job description are sent to OpenAI. Portfolio, skills, and CV data are not sent to OpenAI. This website does not store the submitted description or generated PDF.</p>
     </form>
   </section>
 </div>

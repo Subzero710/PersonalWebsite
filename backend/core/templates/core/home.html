@@ -10,6 +10,15 @@
     {% endif %}
   </header>
 
+  {% if kpis %}
+  <section class="content-section overview-section" id="key-metrics" data-toc-section data-toc-title="Key metrics">
+    <h2 class="section-title">{% include 'core/partials/icon.html' with name='chart' %} Key metrics</h2>
+    <dl class="kpi-grid">
+      {% for kpi in kpis %}<div class="kpi-item"><dt>{{ kpi.label }}</dt><dd>{{ kpi.value }}</dd></div>{% endfor %}
+    </dl>
+  </section>
+  {% endif %}
+
   {% if featured %}
   <section class="content-section overview-section" id="featured-projects" data-toc-section data-toc-title="Featured projects">
     <div class="section-heading overview-section-heading">
