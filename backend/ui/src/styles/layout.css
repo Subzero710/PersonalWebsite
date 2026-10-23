@@ -45,14 +45,72 @@
   transform-origin: center;
 }
 
-/* Tech Stack is a logo + technology-name wall, separate from project topic/classification tags. */
-.tech-wall { gap:10px; }
-.tech-wall .tech-badge-icon {
-  min-height:48px;
-  padding:8px 12px;
-  justify-content:flex-start;
-  gap:9px;
+/* Tech Stack responsive wall */
+.tech-list.tech-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  width: 100%;
+  align-items: stretch;
 }
-.tech-wall .tech-badge-icon .tech-icon { width:28px; height:28px; }
-.tech-wall .tech-name { white-space:nowrap; }
 
+.tech-wall .tech-wall-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  height: auto;
+
+  padding: 9px 12px;
+  overflow: hidden;
+}
+
+.tech-wall .tech-wall-item .tech-icon {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  object-fit: contain;
+}
+
+.tech-wall .tech-wall-name {
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .tech-list.tech-wall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .tech-wall .tech-wall-item {
+    min-height: 48px;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .tech-wall .tech-wall-item .tech-icon {
+    width: 25px;
+    height: 25px;
+    flex-basis: 25px;
+  }
+
+  .tech-wall .tech-wall-name {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .tech-list.tech-wall {
+    grid-template-columns: 1fr;
+  }
+}

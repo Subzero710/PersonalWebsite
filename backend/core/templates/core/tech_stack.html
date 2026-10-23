@@ -7,16 +7,22 @@
   <h1>Tech stack</h1>
   {% if config and config.tech_stack_intro %}<p class="page-lead">{{ config.tech_stack_intro }}</p>{% endif %}
 </header>
+
 {% if technologies %}
 <section class="content-section" id="technologies" data-toc-section data-toc-title="Technologies">
   <h2 class="section-title">{% include 'core/partials/icon.html' with name='layers' %} Technologies</h2>
+
   <div class="tech-list tech-wall" aria-label="Technology stack">
-    {% for item in technologies %}{% with logo=item|skill_icon_src %}{% if logo %}
-    <span class="tech-badge tech-badge-icon" title="{{ item.name }}">
-      {% include 'core/partials/skill_icon.html' with item=item %}
-      <span class="tech-name">{{ item.name }}</span>
-    </span>
-    {% endif %}{% endwith %}{% endfor %}
+    {% for item in technologies %}
+      {% with logo=item|skill_icon_src %}
+        {% if logo %}
+        <span class="tech-badge tech-wall-item" title="{{ item.name }}">
+          {% include 'core/partials/skill_icon.html' with item=item %}
+          <span class="tech-wall-name">{{ item.name }}</span>
+        </span>
+        {% endif %}
+      {% endwith %}
+    {% endfor %}
   </div>
 </section>
 {% endif %}
