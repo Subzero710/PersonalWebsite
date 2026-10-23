@@ -75,8 +75,8 @@ def home(request):
     config = context['config']
     context.update({
         'featured': Project.objects.filter(is_featured=True).prefetch_related('tags').order_by('order', '-created_at')[:3],
-        'focus_items': FocusItem.objects.filter(site=config, is_visible=True)[:3] if config else [],
-        'recent_updates': UpdateItem.objects.filter(site=config, is_visible=True)[:4] if config else [],
+        'focus_items': FocusItem.objects.filter(site=config, is_visible=True) if config else [],
+        'recent_updates': UpdateItem.objects.filter(site=config, is_visible=True) if config else [],
         'kpis': KPI.objects.filter(site=config).order_by('order', 'id') if config else [],
     })
     return render(request, 'core/home.html', context)
